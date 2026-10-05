@@ -245,7 +245,7 @@ def render_ui():
                 font-weight: 700;
             }}
 
-            /* ГОЛОВНЕ НАВІГАЦІЙНЕ МЕНЮ (НАВ-ТАБИ) */
+            /* ГОЛОВНЕ НАВІГАЦІЙНЕ МЕНЮ */
             .main-nav {{
                 display: flex;
                 justify-content: center;
@@ -347,7 +347,7 @@ def render_ui():
                 border-color: transparent;
             }}
 
-            /* СТРУКТУРА КАНБАНУ */
+            /* КАНБАН */
             .kanban-grid {{
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -490,33 +490,22 @@ def render_ui():
                 gap: 4px;
             }}
 
-            /* СТИЛІ ДЛЯ РАЗДЕЛУ ЗАПИСІВ */
-            .recordings-filter {{
-                display: flex;
-                justify-content: center;
-                gap: 8px;
-                margin-bottom: 25px;
-                flex-wrap: wrap;
-            }}
-
-            .rec-btn {{
+            /* СТИЛІ ДЛЯ IFRAME ТАБЛИЦЬ */
+            .iframe-container {{
                 background: var(--card-bg);
                 border: 1px solid var(--card-border);
-                color: var(--text-muted);
-                padding: 8px 14px;
-                border-radius: 12px;
-                font-family: inherit;
-                font-weight: 600;
-                font-size: 0.85rem;
-                cursor: pointer;
-                transition: all 0.2s ease;
+                border-radius: 20px;
+                padding: 10px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                overflow: hidden;
             }}
 
-            .rec-btn.active {{
-                background: var(--accent-cyan);
-                color: #000;
-                font-weight: 800;
-                border-color: transparent;
+            .iframe-container iframe {{
+                width: 100%;
+                height: 75vh;
+                border: none;
+                border-radius: 12px;
+                background: #ffffff;
             }}
 
             .placeholder-box {{
@@ -538,6 +527,9 @@ def render_ui():
             @media (max-width: 768px) {{
                 .kanban-grid {{
                     grid-template-columns: 1fr;
+                }}
+                .iframe-container iframe {{
+                    height: 65vh;
                 }}
             }}
         </style>
@@ -561,7 +553,7 @@ def render_ui():
                 <div class="week-info">Тиждень: <span>{week_label}</span></div>
             </header>
 
-            <!-- НАВІГАЦІЯМІ ТАБИ -->
+            <!-- НАВІГАЦІЙНІ ТАБИ -->
             <div class="main-nav">
                 <button class="nav-btn active" onclick="switchSection('schedule')" id="nav-schedule">
                     📅 Розклад
@@ -589,24 +581,10 @@ def render_ui():
                 <div id="schedule-container">Завантаження розкладу...</div>
             </div>
 
-            <!-- СЕКЦІЯ 2: ЗАПИСИ ЛЕКЦІЙ / ПРАКТИК -->
+            <!-- СЕКЦІЯ 2: ЗАПИСИ ЛЕКЦІЙ / ПРАКТИК (ВБУДОВАНА GOOGLE ТАБЛИЦЯ) -->
             <div id="section-recordings" style="display: none;">
-                <div class="recordings-filter">
-                    <button class="rec-btn active" onclick="setRecTab('all')">Весь список</button>
-                    <button class="rec-btn" onclick="setRecTab('vdus')">ВДУС</button>
-                    <button class="rec-btn" onclick="setRecTab('ag')">АГ</button>
-                    <button class="rec-btn" onclick="setRecTab('dm')">ДМ</button>
-                    <button class="rec-btn" onclick="setRecTab('matan')">Матан</button>
-                    <button class="rec-btn" onclick="setRecTab('proga')">Прога</button>
-                    <button class="rec-btn" onclick="setRecTab('k13')">Список К-13</button>
-                    <button class="rec-btn" onclick="setRecTab('air_alarm')">Проведення пар під час тривог</button>
-                </div>
-
-                <div id="recordings-content">
-                    <div class="placeholder-box">
-                        <h3>🎥 Записи занять</h3>
-                        <p style="margin-top: 10px;">Тут будуть додані посилання на відеозаписи та матеріали лекцій/практик.</p>
-                    </div>
+                <div class="iframe-container">
+                    <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTDpDnWf26AWuZiVqtpxx4wCeYnak_z1YjyiXWFs8-NzlutOP9eQQNCrED97hCaHb-Y6CW0Ur30N-1Q/pubhtml?widget=true&amp;headers=false"></iframe>
                 </div>
             </div>
 
@@ -624,7 +602,6 @@ def render_ui():
             let currentSection = 'schedule';
             let currentSubgroup = 'all';
             let selectedDay = 'today'; 
-            let currentRecTab = 'all';
             let scheduleData = null;
 
             const daysMapUa = {{
@@ -653,40 +630,11 @@ def render_ui():
                 document.getElementById(`nav-${{section}}`).classList.add('active');
             }}
 
-            function setRecTab(tab) {{
-                currentRecTab = tab;
-                document.querySelectorAll('.recordings-filter .rec-btn').forEach(btn => {{
-                    btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${{tab}}'`));
-                }});
-                renderRecordings();
-            }}
-
-            function renderRecordings() {{
-                const content = document.getElementById('recordings-content');
-                const titles = {{
-                    all: 'Весь список записів',
-                    vdus: 'ВДУС (Вступ до університетських студій)',
-                    ag: 'АГ (Алгебра та геометрія)',
-                    dm: 'ДМ (Дискретна математика)',
-                    matan: 'Матан (Математичний аналіз)',
-                    proga: 'Прога (Програмування)',
-                    k13: 'Список К-13',
-                    air_alarm: 'Проведення пар під час тривог'
-                }};
-
-                content.innerHTML = `
-                    <div class="placeholder-box">
-                        <h3>🎥 ${{titles[currentRecTab] || 'Записи'}}</h3>
-                        <p style="margin-top: 10px;">Тут незабаром з'являться посилання на записи та файли для цієї категорії.</p>
-                    </div>
-                `;
-            }}
-
             function toggleTheme() {{
                 const currentTheme = document.body.getAttribute('data-theme');
                 const newTheme = currentTheme === 'light' ? 'dark' : 'light';
                 document.body.setAttribute('data-theme', newTheme);
-                document.getElementById('theme-btn').innerText = newTheme === 'light' ? '☀️' : '🌙';
+                document.getElementById('theme-btn').innerText = newTheme === 'light' ? '☀️️' : '🌙';
                 localStorage.setItem('theme', newTheme);
             }}
 
