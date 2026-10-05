@@ -166,7 +166,7 @@
       "teacher": "Лисенко",
       "room": "Онлайн",
       "link": "https://us05web.zoom.us/j/6096223911?pwd=aC9qb0dIc2pwei9DVG85OVBpZkY2Zz09",
-      "week_type": "odd"
+      "week_type": "all"
     },
     {
       "time": "12:05 - 13:35",
@@ -175,7 +175,7 @@
       "teacher": "Степанечко О.В.",
       "room": "Онлайн",
       "link": "https://us05web.zoom.us/j/6067662289?pwd=aDdMRTM5Y1ZVdmtZVEFyUTYycFJrZz09",
-      "week_type": "odd"
+      "week_type": "all"
     }
   ],
   "friday": [
