@@ -81,7 +81,16 @@
       "teacher": "доц. Александрович І.М.",
       "room": "Онлайн",
       "link": "https://knu-ua.zoom.us/j/2328020391?pwd=NmRiVllLM0pwS1ZvVHdTYUxROWZFdz09",
-      "week_type": "all"
+      "week_type": "odd"
+    },
+    {
+      "time": "14:00 - 15:35",
+      "subject": "ОНС",
+      "type": "Лекція",
+      "teacher": "",
+      "room": "Онлайн",
+      "link": "https://knu-ua.zoom.us/j/9310736011?pwd=iLLqsJl15rcqVozmqfiMRpdvaaX4ey.1",
+      "week_type": "even"
     }
   ],
   "wednesday": [

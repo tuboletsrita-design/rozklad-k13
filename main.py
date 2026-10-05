@@ -161,24 +161,29 @@ def render_ui():
                 transition: background-color 0.3s ease, color 0.3s ease;
             }}
 
-            /* КОКОСИ НА ФОНІ */
+            /* ЯСКРАВІ КОКОСИ НА ФОНІ */
             .bg-coconut {{
                 position: fixed;
-                font-size: 5rem;
-                opacity: 0.05;
+                font-size: 5.5rem;
+                opacity: 0.18;
                 user-select: none;
                 pointer-events: none;
                 z-index: 0;
-                filter: blur(1px);
-                animation: float 12s ease-in-out infinite alternate;
+                animation: float 10s ease-in-out infinite alternate;
             }}
-            .c1 {{ top: 8%; left: 5%; transform: rotate(-15deg); }}
-            .c2 {{ top: 60%; right: 4%; transform: rotate(25deg); animation-delay: -4s; }}
-            .c3 {{ bottom: 10%; left: 10%; transform: rotate(10deg); animation-delay: -7s; }}
+
+            .c1 {{ top: 5%; left: 3%; transform: rotate(-15deg); }}
+            .c2 {{ top: 15%; right: 5%; transform: rotate(20deg); animation-delay: -2s; }}
+            .c3 {{ top: 45%; left: 2%; transform: rotate(-10deg); animation-delay: -5s; }}
+            .c4 {{ top: 55%; right: 3%; transform: rotate(25deg); animation-delay: -3s; }}
+            .c5 {{ bottom: 12%; left: 6%; transform: rotate(15deg); animation-delay: -7s; }}
+            .c6 {{ bottom: 8%; right: 7%; transform: rotate(-20deg); animation-delay: -4s; }}
+            .c7 {{ top: 30%; left: 48%; transform: rotate(12deg); font-size: 4rem; animation-delay: -6s; }}
+            .c8 {{ bottom: 35%; right: 45%; transform: rotate(-18deg); font-size: 4.5rem; animation-delay: -1s; }}
 
             @keyframes float {{
                 0% {{ transform: translateY(0) rotate(0deg); }}
-                100% {{ transform: translateY(-25px) rotate(15deg); }}
+                100% {{ transform: translateY(-20px) rotate(12deg); }}
             }}
 
             .container {{
@@ -472,9 +477,15 @@ def render_ui():
     </head>
     <body>
 
+        <!-- 8 КОКОСІВ НА ФОНІ -->
         <div class="bg-coconut c1">🥥</div>
         <div class="bg-coconut c2">🥥</div>
         <div class="bg-coconut c3">🥥</div>
+        <div class="bg-coconut c4">🥥</div>
+        <div class="bg-coconut c5">🥥</div>
+        <div class="bg-coconut c6">🥥</div>
+        <div class="bg-coconut c7">🥥</div>
+        <div class="bg-coconut c8">🥥</div>
 
         <div class="container">
             <header>
