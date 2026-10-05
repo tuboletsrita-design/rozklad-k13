@@ -156,12 +156,36 @@ def render_ui():
                 color: var(--text-main);
                 padding: 20px 15px 60px;
                 min-height: 100vh;
+                position: relative;
+                overflow-x: hidden;
                 transition: background-color 0.3s ease, color 0.3s ease;
+            }}
+
+            /* КОКОСИ НА ФОНІ */
+            .bg-coconut {{
+                position: fixed;
+                font-size: 5rem;
+                opacity: 0.05;
+                user-select: none;
+                pointer-events: none;
+                z-index: 0;
+                filter: blur(1px);
+                animation: float 12s ease-in-out infinite alternate;
+            }}
+            .c1 {{ top: 8%; left: 5%; transform: rotate(-15deg); }}
+            .c2 {{ top: 60%; right: 4%; transform: rotate(25deg); animation-delay: -4s; }}
+            .c3 {{ bottom: 10%; left: 10%; transform: rotate(10deg); animation-delay: -7s; }}
+
+            @keyframes float {{
+                0% {{ transform: translateY(0) rotate(0deg); }}
+                100% {{ transform: translateY(-25px) rotate(15deg); }}
             }}
 
             .container {{
                 max-width: 1200px;
                 margin: 0 auto;
+                position: relative;
+                z-index: 1;
             }}
 
             header {{
@@ -448,6 +472,10 @@ def render_ui():
     </head>
     <body>
 
+        <div class="bg-coconut c1">🥥</div>
+        <div class="bg-coconut c2">🥥</div>
+        <div class="bg-coconut c3">🥥</div>
+
         <div class="container">
             <header>
                 <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙</button>
@@ -470,7 +498,7 @@ def render_ui():
 
         <script>
             let currentSubgroup = 'all';
-            let selectedDay = 'all'; 
+            let selectedDay = 'today'; 
             let scheduleData = null;
 
             const daysMapUa = {{
@@ -496,7 +524,6 @@ def render_ui():
                 localStorage.setItem('theme', newTheme);
             }}
 
-            // Завантаження збереженої теми
             if (localStorage.getItem('theme') === 'light') {{
                 toggleTheme();
             }}
@@ -522,16 +549,12 @@ def render_ui():
                 const today = scheduleData.today;
 
                 let html = `
-                    <button class="day-btn ${{selectedDay === 'all' ? 'active' : ''}}" onclick="setDayFilter('all')">
-                        📊 Всі дні
-                    </button>
                     <button class="day-btn ${{selectedDay === 'today' ? 'active' : ''}}" onclick="setDayFilter('today')">
                         ✨ Сьогодні
                     </button>
                 `;
 
                 for (const [dayKey, dayShort] of Object.entries(daysMapUa)) {{
-                    const isTodayDay = (dayKey === today);
                     const isActive = (selectedDay === dayKey);
 
                     html += `
@@ -540,6 +563,12 @@ def render_ui():
                         </button>
                     `;
                 }}
+
+                html += `
+                    <button class="day-btn ${{selectedDay === 'all' ? 'active' : ''}}" onclick="setDayFilter('all')">
+                        📊 Всі дні
+                    </button>
+                `;
 
                 container.innerHTML = html;
             }}
@@ -568,7 +597,7 @@ def render_ui():
                 const container = document.getElementById('schedule-container');
                 container.innerHTML = '';
 
-                // ЯКЩО ОБРАНО "ВСІ ДНІ" -> РЕНДЕРИМО КАНБАН
+                // КАНБАН ДЛЯ "ВСІ ДНІ"
                 if (selectedDay === 'all') {{
                     let gridHtml = '<div class="kanban-grid">';
 
@@ -625,7 +654,7 @@ def render_ui():
                     return;
                 }}
 
-                // ІНАКШЕ (ОДИН ДЕНЬ АБО СЬОГОДНІ)
+                // СПИСОК ДЛЯ ОДНОГО ДНЯ
                 const targetDay = (selectedDay === 'today') ? scheduleData.today : selectedDay;
                 const lessons = scheduleData.schedule[targetDay] || [];
                 const isToday = (targetDay === scheduleData.today);
