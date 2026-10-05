@@ -198,7 +198,7 @@ def render_ui():
                 flex-direction: column;
                 align-items: center;
                 gap: 10px;
-                margin-bottom: 25px;
+                margin-bottom: 20px;
                 position: relative;
             }}
 
@@ -245,7 +245,44 @@ def render_ui():
                 font-weight: 700;
             }}
 
-            /* ФІЛЬТРИ */
+            /* ГОЛОВНЕ НАВІГАЦІЙНЕ МЕНЮ (НАВ-ТАБИ) */
+            .main-nav {{
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                margin-bottom: 25px;
+                flex-wrap: wrap;
+            }}
+
+            .nav-btn {{
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                color: var(--text-muted);
+                padding: 10px 20px;
+                border-radius: 14px;
+                font-family: inherit;
+                font-weight: 700;
+                font-size: 0.95rem;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }}
+
+            .nav-btn:hover {{
+                border-color: var(--accent-blue);
+                color: var(--text-main);
+            }}
+
+            .nav-btn.active {{
+                background: var(--accent-purple);
+                color: #ffffff;
+                border-color: transparent;
+                box-shadow: 0 4px 16px rgba(168, 85, 247, 0.35);
+            }}
+
+            /* ФІЛЬТРИ ДЛЯ РОЗКЛАДУ */
             .controls-wrapper {{
                 display: flex;
                 flex-direction: column;
@@ -272,9 +309,6 @@ def render_ui():
                 font-size: 0.88rem;
                 cursor: pointer;
                 transition: all 0.2s ease;
-                display: flex;
-                align-items: center;
-                gap: 6px;
             }}
 
             .day-btn:hover {{
@@ -313,7 +347,7 @@ def render_ui():
                 border-color: transparent;
             }}
 
-            /* СТИЛЬ ВСІ ДНІ (КАНБАН) */
+            /* СТРУКТУРА КАНБАНУ */
             .kanban-grid {{
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -364,7 +398,6 @@ def render_ui():
                 font-weight: 700;
             }}
 
-            /* КАРТОЧКА ПАРИ В КАНБАНІ */
             .kanban-card {{
                 background: var(--btn-bg);
                 border: 1px solid var(--card-border);
@@ -442,7 +475,6 @@ def render_ui():
                 display: inline-flex;
                 align-items: center;
                 gap: 4px;
-                transition: opacity 0.2s;
             }}
 
             .btn-meet {{
@@ -458,11 +490,46 @@ def render_ui():
                 gap: 4px;
             }}
 
-            .btn-zoom:hover, .btn-meet:hover {{
-                opacity: 0.88;
+            /* СТИЛІ ДЛЯ РАЗДЕЛУ ЗАПИСІВ */
+            .recordings-filter {{
+                display: flex;
+                justify-content: center;
+                gap: 8px;
+                margin-bottom: 25px;
+                flex-wrap: wrap;
             }}
 
-            /* ОДИНОЧНИЙ ДЕНЬ (СПИСОК) */
+            .rec-btn {{
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                color: var(--text-muted);
+                padding: 8px 14px;
+                border-radius: 12px;
+                font-family: inherit;
+                font-weight: 600;
+                font-size: 0.85rem;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }}
+
+            .rec-btn.active {{
+                background: var(--accent-cyan);
+                color: #000;
+                font-weight: 800;
+                border-color: transparent;
+            }}
+
+            .placeholder-box {{
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 20px;
+                padding: 40px 20px;
+                text-align: center;
+                color: var(--text-muted);
+                max-width: 600px;
+                margin: 0 auto;
+            }}
+
             .single-day-wrapper {{
                 max-width: 650px;
                 margin: 0 auto;
@@ -494,22 +561,70 @@ def render_ui():
                 <div class="week-info">Тиждень: <span>{week_label}</span></div>
             </header>
 
-            <div class="controls-wrapper">
-                <div class="days-filter" id="days-filter-container"></div>
+            <!-- НАВІГАЦІЯМІ ТАБИ -->
+            <div class="main-nav">
+                <button class="nav-btn active" onclick="switchSection('schedule')" id="nav-schedule">
+                    📅 Розклад
+                </button>
+                <button class="nav-btn" onclick="switchSection('recordings')" id="nav-recordings">
+                    🎥 Записи лекцій/практик
+                </button>
+                <button class="nav-btn" onclick="switchSection('homework')" id="nav-homework">
+                    📝 ДЗ
+                </button>
+            </div>
 
-                <div class="subgroup-filter">
-                    <button class="filter-btn active" onclick="setSubgroupFilter('all')">Повний розклад</button>
-                    <button class="filter-btn" onclick="setSubgroupFilter('П1')">Підгрупа 1 (П1)</button>
-                    <button class="filter-btn" onclick="setSubgroupFilter('П2')">Підгрупа 2 (П2)</button>
+            <!-- СЕКЦІЯ 1: РОЗКЛАД -->
+            <div id="section-schedule">
+                <div class="controls-wrapper">
+                    <div class="days-filter" id="days-filter-container"></div>
+
+                    <div class="subgroup-filter">
+                        <button class="filter-btn active" onclick="setSubgroupFilter('all')">Повний розклад</button>
+                        <button class="filter-btn" onclick="setSubgroupFilter('П1')">Підгрупа 1 (П1)</button>
+                        <button class="filter-btn" onclick="setSubgroupFilter('П2')">Підгрупа 2 (П2)</button>
+                    </div>
+                </div>
+
+                <div id="schedule-container">Завантаження розкладу...</div>
+            </div>
+
+            <!-- СЕКЦІЯ 2: ЗАПИСИ ЛЕКЦІЙ / ПРАКТИК -->
+            <div id="section-recordings" style="display: none;">
+                <div class="recordings-filter">
+                    <button class="rec-btn active" onclick="setRecTab('all')">Весь список</button>
+                    <button class="rec-btn" onclick="setRecTab('vdus')">ВДУС</button>
+                    <button class="rec-btn" onclick="setRecTab('ag')">АГ</button>
+                    <button class="rec-btn" onclick="setRecTab('dm')">ДМ</button>
+                    <button class="rec-btn" onclick="setRecTab('matan')">Матан</button>
+                    <button class="rec-btn" onclick="setRecTab('proga')">Прога</button>
+                    <button class="rec-btn" onclick="setRecTab('k13')">Список К-13</button>
+                    <button class="rec-btn" onclick="setRecTab('air_alarm')">Проведення пар під час тривог</button>
+                </div>
+
+                <div id="recordings-content">
+                    <div class="placeholder-box">
+                        <h3>🎥 Записи занять</h3>
+                        <p style="margin-top: 10px;">Тут будуть додані посилання на відеозаписи та матеріали лекцій/практик.</p>
+                    </div>
                 </div>
             </div>
 
-            <div id="schedule-container">Завантаження розкладу...</div>
+            <!-- СЕКЦІЯ 3: ДЗ -->
+            <div id="section-homework" style="display: none;">
+                <div class="placeholder-box">
+                    <h3>📝 Домашні завдання</h3>
+                    <p style="margin-top: 10px;">Розділ ДЗ створено! Тут з'являтимуться актуальні завдання для вашої групи.</p>
+                </div>
+            </div>
+
         </div>
 
         <script>
+            let currentSection = 'schedule';
             let currentSubgroup = 'all';
             let selectedDay = 'today'; 
+            let currentRecTab = 'all';
             let scheduleData = null;
 
             const daysMapUa = {{
@@ -526,6 +641,46 @@ def render_ui():
                 monday: 'dot-mon', tuesday: 'dot-tue', wednesday: 'dot-wed',
                 thursday: 'dot-thu', friday: 'dot-fri', saturday: 'dot-sat'
             }};
+
+            function switchSection(section) {{
+                currentSection = section;
+
+                document.getElementById('section-schedule').style.display = section === 'schedule' ? 'block' : 'none';
+                document.getElementById('section-recordings').style.display = section === 'recordings' ? 'block' : 'none';
+                document.getElementById('section-homework').style.display = section === 'homework' ? 'block' : 'none';
+
+                document.querySelectorAll('.main-nav .nav-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById(`nav-${{section}}`).classList.add('active');
+            }}
+
+            function setRecTab(tab) {{
+                currentRecTab = tab;
+                document.querySelectorAll('.recordings-filter .rec-btn').forEach(btn => {{
+                    btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${{tab}}'`));
+                }});
+                renderRecordings();
+            }}
+
+            function renderRecordings() {{
+                const content = document.getElementById('recordings-content');
+                const titles = {{
+                    all: 'Весь список записів',
+                    vdus: 'ВДУС (Вступ до університетських студій)',
+                    ag: 'АГ (Алгебра та геометрія)',
+                    dm: 'ДМ (Дискретна математика)',
+                    matan: 'Матан (Математичний аналіз)',
+                    proga: 'Прога (Програмування)',
+                    k13: 'Список К-13',
+                    air_alarm: 'Проведення пар під час тривог'
+                }};
+
+                content.innerHTML = `
+                    <div class="placeholder-box">
+                        <h3>🎥 ${{titles[currentRecTab] || 'Записи'}}</h3>
+                        <p style="margin-top: 10px;">Тут незабаром з'являться посилання на записи та файли для цієї категорії.</p>
+                    </div>
+                `;
+            }}
 
             function toggleTheme() {{
                 const currentTheme = document.body.getAttribute('data-theme');
@@ -557,7 +712,6 @@ def render_ui():
                 if (!scheduleData) return;
 
                 const container = document.getElementById('days-filter-container');
-                const today = scheduleData.today;
 
                 let html = `
                     <button class="day-btn ${{selectedDay === 'today' ? 'active' : ''}}" onclick="setDayFilter('today')">
@@ -608,7 +762,6 @@ def render_ui():
                 const container = document.getElementById('schedule-container');
                 container.innerHTML = '';
 
-                // КАНБАН ДЛЯ "ВСІ ДНІ"
                 if (selectedDay === 'all') {{
                     let gridHtml = '<div class="kanban-grid">';
 
@@ -665,7 +818,6 @@ def render_ui():
                     return;
                 }}
 
-                // СПИСОК ДЛЯ ОДНОГО ДНЯ
                 const targetDay = (selectedDay === 'today') ? scheduleData.today : selectedDay;
                 const lessons = scheduleData.schedule[targetDay] || [];
                 const isToday = (targetDay === scheduleData.today);
