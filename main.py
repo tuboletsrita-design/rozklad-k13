@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse
 
 app = FastAPI(title="Розклад групи")
 
@@ -58,7 +58,7 @@ def get_full_schedule(week: str = None):
 
 @app.get("/get-link")
 def get_current_lesson_link():
-    """Повертає посилання на пару, яка йде просто зараз (або першу доступну сьогодні)."""
+    """Повертає посилання на пару, яка йде просто зараз."""
     schedule_data = get_full_schedule()
     today = schedule_data["today"]
     today_lessons = schedule_data["schedule"].get(today, [])
@@ -66,7 +66,6 @@ def get_current_lesson_link():
     now = datetime.now()
     current_minutes = now.hour * 60 + now.minute
 
-    # Шукаємо пару, яка йде зараз
     for lesson in today_lessons:
         try:
             start_str, end_str = lesson["time"].split(" - ")
@@ -91,7 +90,6 @@ def get_current_lesson_link():
         except Exception:
             continue
 
-    # Якщо зараз немає пари, повертаємо посилання на першу пару з посиланням на сьогодні
     for lesson in today_lessons:
         if lesson.get("link"):
             return {
@@ -177,7 +175,7 @@ def render_ui():
 
             header {{
                 text-align: center;
-                margin-bottom: 30px;
+                margin-bottom: 25px;
             }}
 
             h1 {{
@@ -208,23 +206,66 @@ def render_ui():
                 font-weight: 700;
             }}
 
+            /* ДНІ ТИЖНЯ ФІЛЬТР */
+            .days-filter {{
+                display: flex;
+                justify-content: center;
+                gap: 8px;
+                margin: 20px 0 15px;
+                flex-wrap: wrap;
+            }}
+
+            .day-btn {{
+                background: #18181b;
+                border: 1px solid var(--card-border);
+                color: var(--text-muted);
+                padding: 8px 14px;
+                border-radius: 12px;
+                font-family: inherit;
+                font-weight: 700;
+                font-size: 0.88rem;
+                cursor: pointer;
+                transition: all 0.25 ease;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }}
+
+            .day-btn:hover {{
+                background: #27272a;
+                color: #fff;
+            }}
+
+            .day-btn.active {{
+                background: var(--accent-cyan);
+                color: #000;
+                border-color: transparent;
+                box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+            }}
+
+            .day-btn.is-today-btn {{
+                border-color: rgba(6, 182, 212, 0.5);
+            }}
+
+            /* ПІДГРУПИ ФІЛЬТР */
             .subgroup-filter {{
                 display: flex;
                 justify-content: center;
-                gap: 10px;
-                margin: 25px 0 35px;
+                gap: 8px;
+                margin-bottom: 30px;
             }}
 
             .filter-btn {{
                 background: #18181b;
                 border: 1px solid var(--card-border);
                 color: var(--text-muted);
-                padding: 8px 20px;
-                border-radius: 12px;
+                padding: 6px 14px;
+                border-radius: 10px;
                 font-family: inherit;
+                font-size: 0.82rem;
                 font-weight: 600;
                 cursor: pointer;
-                transition: all 0.3s ease;
+                transition: all 0.25s ease;
             }}
 
             .filter-btn:hover {{
@@ -389,6 +430,16 @@ def render_ui():
                 background: var(--accent-cyan);
                 color: #000;
             }}
+
+            .no-lessons {{
+                text-align: center;
+                padding: 40px 20px;
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 20px;
+                color: var(--text-muted);
+                font-weight: 600;
+            }}
         </style>
     </head>
     <body>
@@ -403,25 +454,78 @@ def render_ui():
                 <div class="week-info">Тиждень: <span>{week_label}</span></div>
             </header>
 
+            <div class="days-filter" id="days-filter-container">
+                <!-- Кнопки днів додадуться через JS -->
+            </div>
+
             <div class="subgroup-filter">
-                <button class="filter-btn active" onclick="setFilter('all')">Повний розклад</button>
-                <button class="filter-btn" onclick="setFilter('П1')">Підгрупа 1 (П1)</button>
-                <button class="filter-btn" onclick="setFilter('П2')">Підгрупа 2 (П2)</button>
+                <button class="filter-btn active" onclick="setSubgroupFilter('all')">Повний розклад</button>
+                <button class="filter-btn" onclick="setSubgroupFilter('П1')">Підгрупа 1 (П1)</button>
+                <button class="filter-btn" onclick="setSubgroupFilter('П2')">Підгрупа 2 (П2)</button>
             </div>
 
             <div id="schedule-container">Завантаження розкладу...</div>
         </div>
 
         <script>
-            let currentFilter = 'all';
+            let currentSubgroup = 'all';
+            let selectedDay = 'today'; // 'today', 'all', або конкретний день 'monday'
             let scheduleData = null;
 
-            function setFilter(filter) {{
-                currentFilter = filter;
-                document.querySelectorAll('.filter-btn').forEach(btn => {{
+            const daysMapUa = {{
+                monday: 'Пн', tuesday: 'Вт', wednesday: 'Ср',
+                thursday: 'Чт', friday: "Пт", saturday: 'Сб'
+            }};
+
+            const daysFullUa = {{
+                monday: 'Понеділок', tuesday: 'Вівторок', wednesday: 'Середа',
+                thursday: 'Четвер', friday: "П'ятниця", saturday: 'Субота'
+            }};
+
+            function setDayFilter(day) {{
+                selectedDay = day;
+                renderDaysButtons();
+                renderSchedule();
+            }}
+
+            function setSubgroupFilter(filter) {{
+                currentSubgroup = filter;
+                document.querySelectorAll('.subgroup-filter .filter-btn').forEach(btn => {{
                     btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${{filter}}'`));
                 }});
                 renderSchedule();
+            }}
+
+            function renderDaysButtons() {{
+                if (!scheduleData) return;
+
+                const container = document.getElementById('days-filter-container');
+                const today = scheduleData.today;
+
+                let html = `
+                    <button class="day-btn ${{selectedDay === 'today' ? 'active' : ''}} is-today-btn" onclick="setDayFilter('today')">
+                        ✨ Сьогодні
+                    </button>
+                `;
+
+                for (const [dayKey, dayShort] of Object.entries(daysMapUa)) {{
+                    const isTodayDay = (dayKey === today);
+                    const isActive = (selectedDay === dayKey);
+
+                    html += `
+                        <button class="day-btn ${{isActive ? 'active' : ''}} ${{isTodayDay ? 'is-today-btn' : ''}}" onclick="setDayFilter('${{dayKey}}')">
+                            ${{dayShort}}
+                        </button>
+                    `;
+                }}
+
+                html += `
+                    <button class="day-btn ${{selectedDay === 'all' ? 'active' : ''}}" onclick="setDayFilter('all')">
+                        📅 Всі дні
+                    </button>
+                `;
+
+                container.innerHTML = html;
             }}
 
             function isLessonLive(timeStr, isToday) {{
@@ -449,50 +553,63 @@ def render_ui():
                 const container = document.getElementById('schedule-container');
                 container.innerHTML = '';
 
-                const daysUa = {{
-                    monday: 'Понеділок', tuesday: 'Вівторок', wednesday: 'Середа',
-                    thursday: 'Четвер', friday: "П'ятниця", saturday: 'Субота'
-                }};
+                let daysToDisplay = [];
 
-                for (const [day, lessons] of Object.entries(scheduleData.schedule)) {{
+                if (selectedDay === 'today') {{
+                    daysToDisplay = [scheduleData.today];
+                }} else if (selectedDay === 'all') {{
+                    daysToDisplay = Object.keys(scheduleData.schedule);
+                }} else {{
+                    daysToDisplay = [selectedDay];
+                }}
+
+                let renderedCount = 0;
+
+                for (const day of daysToDisplay) {{
+                    const lessons = scheduleData.schedule[day] || [];
                     const isToday = (day === scheduleData.today);
 
                     const filteredLessons = lessons.filter(l => {{
-                        if (currentFilter === 'all') return true;
-
-                        if (l.subject.includes('(П1)') && currentFilter === 'П2') return false;
-                        if (l.subject.includes('(П2)') && currentFilter === 'П1') return false;
-
+                        if (currentSubgroup === 'all') return true;
+                        if (l.subject.includes('(П1)') && currentSubgroup === 'П2') return false;
+                        if (l.subject.includes('(П2)') && currentSubgroup === 'П1') return false;
                         return true;
                     }});
 
-                    if (filteredLessons.length === 0) continue;
+                    if (filteredLessons.length === 0 && selectedDay !== 'today' && selectedDay !== day) continue;
 
-                    let lessonsHtml = filteredLessons.map(l => {{
-                        const live = isLessonLive(l.time, isToday);
+                    renderedCount++;
 
-                        return `
-                            <div class="lesson ${{live ? 'is-live' : ''}}">
-                                ${{live ? '<div class="live-indicator"><div class="live-dot"></div> ЗАРАЗ ЙДЕ ПАРА</div>' : ''}}
-                                <div class="lesson-time">⏱ ${{l.time}}</div>
-                                <div class="lesson-subject">
-                                    ${{l.subject}}
-                                    <span class="lesson-type">${{l.type}}</span>
+                    let lessonsHtml = '';
+                    if (filteredLessons.length === 0) {{
+                        lessonsHtml = `<div style="color: var(--text-muted); font-size: 0.9rem; padding: 10px 0;">🎉 Немає пар на цей день!</div>`;
+                    }} else {{
+                        lessonsHtml = filteredLessons.map(l => {{
+                            const live = isLessonLive(l.time, isToday);
+
+                            return `
+                                <div class="lesson ${{live ? 'is-live' : ''}}">
+                                    ${{live ? '<div class="live-indicator"><div class="live-dot"></div> ЗАРАЗ ЙДЕ ПАРА</div>' : ''}}
+                                    <div class="lesson-time">⏱ ${{l.time}}</div>
+                                    <div class="lesson-subject">
+                                        ${{l.subject}}
+                                        <span class="lesson-type">${{l.type}}</span>
+                                    </div>
+                                    <div class="lesson-meta">
+                                        <span>👨‍‍🏫 ${{l.teacher}}</span>
+                                        <span>📍 ${{l.room}}</span>
+                                    </div>
+                                    ${{l.link ? `<a class="link-btn" href="${{l.link}}" target="_blank">🔗 Приєднатися до пари</a>` : `<span style="font-size: 0.8rem; color: #52525b; display: block; margin-top: 8px;">🔗 Посилання ще не додано</span>`}}
                                 </div>
-                                <div class="lesson-meta">
-                                    <span>👨‍🏫 ${{l.teacher}}</span>
-                                    <span>📍 ${{l.room}}</span>
-                                </div>
-                                ${{l.link ? `<a class="link-btn" href="${{l.link}}" target="_blank">🔗 Приєднатися до пари</a>` : `<span style="font-size: 0.8rem; color: #52525b; display: block; margin-top: 8px;">🔗 Посилання ще не додано</span>`}}
-                            </div>
-                        `;
-                    }}).join('');
+                            `;
+                        }}).join('');
+                    }}
 
                     container.innerHTML += `
                         <div class="day-card ${{isToday ? 'is-today' : ''}}">
                             <div class="day-header">
                                 <h2 class="day-title">
-                                    ${{daysUa[day] || day}}
+                                    ${{daysFullUa[day] || day}}
                                 </h2>
                                 ${{isToday ? '<span class="today-badge">Сьогодні</span>' : ''}}
                             </div>
@@ -500,11 +617,16 @@ def render_ui():
                         </div>
                     `;
                 }}
+
+                if (renderedCount === 0) {{
+                    container.innerHTML = `<div class="no-lessons">🎉 Пар на обраний день немає!</div>`;
+                }}
             }}
 
             async function fetchSchedule() {{
                 const res = await fetch('/api/schedule');
                 scheduleData = await res.json();
+                renderDaysButtons();
                 renderSchedule();
             }}
 
