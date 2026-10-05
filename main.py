@@ -132,6 +132,7 @@ def render_ui():
                 --accent-cyan: #06b6d4;
                 --accent-pink: #ec4899;
                 --badge-bg: rgba(255, 255, 255, 0.06);
+                --iframe-filter: invert(0.9) hue-rotate(180deg) contrast(0.9);
             }}
 
             [data-theme="light"] {{
@@ -142,6 +143,7 @@ def render_ui():
                 --text-main: #0f172a;
                 --text-muted: #64748b;
                 --badge-bg: rgba(0, 0, 0, 0.05);
+                --iframe-filter: none;
             }}
 
             * {{
@@ -502,21 +504,12 @@ def render_ui():
 
             .iframe-container iframe {{
                 width: 100%;
-                height: 75vh;
+                height: 78vh;
                 border: none;
                 border-radius: 12px;
                 background: #ffffff;
-            }}
-
-            .placeholder-box {{
-                background: var(--card-bg);
-                border: 1px solid var(--card-border);
-                border-radius: 20px;
-                padding: 40px 20px;
-                text-align: center;
-                color: var(--text-muted);
-                max-width: 600px;
-                margin: 0 auto;
+                filter: var(--iframe-filter);
+                transition: filter 0.3s ease;
             }}
 
             .single-day-wrapper {{
@@ -529,7 +522,7 @@ def render_ui():
                     grid-template-columns: 1fr;
                 }}
                 .iframe-container iframe {{
-                    height: 65vh;
+                    height: 68vh;
                 }}
             }}
         </style>
@@ -581,7 +574,7 @@ def render_ui():
                 <div id="schedule-container">Завантаження розкладу...</div>
             </div>
 
-            <!-- СЕКЦІЯ 2: ЗАПИСИ ЛЕКЦІЙ / ПРАКТИК (ВБУДОВАНА GOOGLE ТАБЛИЦЯ) -->
+            <!-- СЕКЦІЯ 2: ЗАПИСИ ЛЕКЦІЙ / ПРАКТИК -->
             <div id="section-recordings" style="display: none;">
                 <div class="iframe-container">
                     <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTDpDnWf26AWuZiVqtpxx4wCeYnak_z1YjyiXWFs8-NzlutOP9eQQNCrED97hCaHb-Y6CW0Ur30N-1Q/pubhtml?widget=true&amp;headers=false"></iframe>
@@ -590,9 +583,8 @@ def render_ui():
 
             <!-- СЕКЦІЯ 3: ДЗ -->
             <div id="section-homework" style="display: none;">
-                <div class="placeholder-box">
-                    <h3>📝 Домашні завдання</h3>
-                    <p style="margin-top: 10px;">Розділ ДЗ створено! Тут з'являтимуться актуальні завдання для вашої групи.</p>
+                <div class="iframe-container">
+                    <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3jeYJV7pxlUEGO4uNDNeYFkBoOR7w1-lCDMymQ7CfLoH5dtEI7nLpGk_US29zc_KUSDiPzkr54Xu9/pubhtml?widget=true&amp;headers=false"></iframe>
                 </div>
             </div>
 
@@ -634,7 +626,7 @@ def render_ui():
                 const currentTheme = document.body.getAttribute('data-theme');
                 const newTheme = currentTheme === 'light' ? 'dark' : 'light';
                 document.body.setAttribute('data-theme', newTheme);
-                document.getElementById('theme-btn').innerText = newTheme === 'light' ? '☀️️' : '🌙';
+                document.getElementById('theme-btn').innerText = newTheme === 'light' ? '☀️' : '🌙';
                 localStorage.setItem('theme', newTheme);
             }}
 
