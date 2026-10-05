@@ -1,0 +1,293 @@
+{
+  "monday": [
+    {
+      "time": "08:30 - 10:05",
+      "subject": "Вступ до університетських студій",
+      "type": "Лекція",
+      "teacher": "доц. Набока С.В.",
+      "room": "Онлайн",
+      "link": "https://us04web.zoom.us/j/9507579405?pwd=MUtrUDRtMWN6NGl0eHdPZ1ZvM3ZvUT09&omn",
+      "week_type": "all"
+    },
+    {
+      "time": "10:15 - 11:50",
+      "subject": "Програмування",
+      "type": "Лекція",
+      "teacher": "доц. Карнаух Т.О.",
+      "room": "Онлайн",
+      "link": "https://meet.google.com/qaz-bbbb-zrv?authuser=0",
+      "week_type": "all"
+    },
+    {
+      "time": "12:05 - 13:35",
+      "subject": "Дискретна математика",
+      "type": "Лекція",
+      "teacher": "доц. Трохимчук Р.М.",
+      "room": "Онлайн",
+      "link": "https://knu-ua.zoom.us/j/87542077807?pwd=a3U1eC9tcWNZZnFyZTBOY0VyanBuUT09",
+      "week_type": "all"
+    }
+  ],
+  "tuesday": [
+    {
+      "time": "08:30 - 10:05",
+      "subject": "Математичний аналіз",
+      "type": "Лекція",
+      "teacher": "доц. Александрович І.М.",
+      "room": "Онлайн",
+      "link": "https://knu-ua.zoom.us/j/2328020391?pwd=NmRiVllLM0pwS1ZvVHdTYUxROWZFdz09",
+      "week_type": "all"
+    },
+    {
+      "time": "10:15 - 11:50",
+      "subject": "Алгебра та геометрія",
+      "type": "Лекція",
+      "teacher": "ас. Шакотько Т.І.",
+      "room": "Онлайн",
+      "link": "https://us05web.zoom.us/j/89342831649?pwd=Nqd71WvWkb75O7cTQuAzYjQUjPbwMf.1",
+      "week_type": "all"
+    },
+    {
+      "time": "12:05 - 13:35",
+      "subject": "Алгебра та геометрія",
+      "type": "Лекція",
+      "teacher": "ас. Шакотько Т.І.",
+      "room": "Онлайн",
+      "link": "https://us05web.zoom.us/j/89342831649?pwd=Nqd71WvWkb75O7cTQuAzYjQUjPbwMf.1",
+      "week_type": "odd"
+    },
+    {
+      "time": "12:05 - 13:35",
+      "subject": "Математичний аналіз",
+      "type": "Лекція",
+      "teacher": "доц. Александрович І.М.",
+      "room": "Онлайн",
+      "link": "https://knu-ua.zoom.us/j/2328020391?pwd=NmRiVllLM0pwS1ZvVHdTYUxROWZFdz09",
+      "week_type": "even"
+    },
+    {
+      "time": "14:00 - 15:35",
+      "subject": "Математичний аналіз",
+      "type": "Лекція",
+      "teacher": "доц. Александрович І.М.",
+      "room": "Онлайн",
+      "link": "https://knu-ua.zoom.us/j/2328020391?pwd=NmRiVllLM0pwS1ZvVHdTYUxROWZFdz09",
+      "week_type": "all"
+    }
+  ],
+  "wednesday": [
+    {
+      "time": "08:30 - 10:05",
+      "subject": "Алгебра та геометрія",
+      "type": "Практика",
+      "teacher": "ас. Костогриз Р.О.",
+      "room": "Онлайн",
+      "link": "https://us04web.zoom.us/j/7613754272?pwd=N2djYkxUazhuVGpOSTBKLzQxYkFIZz09",
+      "week_type": "all"
+    },
+    {
+      "time": "10:15 - 11:50",
+      "subject": "Дискретна математика (П1)",
+      "type": "Практика",
+      "teacher": "доц. Трохимчук Р.М.",
+      "room": "Онлайн",
+      "link": "https://knu-ua.zoom.us/j/87542077807?pwd=a3U1eC9tcWNZZnFyZTBOY0VyanBuUT09",
+      "week_type": "all"
+    },
+    {
+      "time": "10:15 - 11:50",
+      "subject": "Програмування (П2)",
+      "type": "Лабораторна",
+      "teacher": "Ляшко А.В.",
+      "room": "Онлайн",
+      "link": "https://meet.google.com/swy-hqsw-nqe",
+      "week_type": "all"
+    },
+    {
+      "time": "12:05 - 13:35",
+      "subject": "Дискретна математика (П2)",
+      "type": "Практика",
+      "teacher": "Єфремов М.С.",
+      "room": "Онлайн",
+      "link": "https://knu-ua.zoom.us/j/7486881580?pwd=Uq2JYtpkCKB3L5dma7UoPLaIj3jiFP.1",
+      "week_type": "all"
+    },
+    {
+      "time": "12:05 - 13:35",
+      "subject": "Програмування (П1)",
+      "type": "Лабораторна",
+      "teacher": "ас. Скибицький",
+      "room": "Онлайн",
+      "link": "https://knu-ua.zoom.us/j/85939165614?pwd=y7LShoyQLQJbPco8TEWytHRKg2IAQT.1",
+      "week_type": "all"
+    },
+    {
+      "time": "14:00 - 15:35",
+      "subject": "Алгебра та геометрія",
+      "type": "Практика",
+      "teacher": "ас. Браганець О.А.",
+      "room": "Онлайн",
+      "link": "https://us04web.zoom.us/j/76479733144?pwd=d0JOQ3ZxL3F6WUhad25xTi9NYmV4Zz09",
+      "week_type": "all"
+    }
+  ],
+  "thursday": [
+    {
+      "time": "08:30 - 10:05",
+      "subject": "Математичний аналіз",
+      "type": "Практика",
+      "teacher": "проф. Семенов",
+      "room": "Онлайн",
+      "link": "https://us04web.zoom.us/j/77295415681?pwd=StO8ggcSvHHWNVS4K6zO7sHwNlfqua.1",
+      "week_type": "all"
+    },
+    {
+      "time": "10:15 - 11:50",
+      "subject": "Іноземна мова (Група Лисенко)",
+      "type": "Практика",
+      "teacher": "Лисенко",
+      "room": "Онлайн",
+      "link": "https://us05web.zoom.us/j/6096223911?pwd=aC9qb0dIc2pwei9DVG85OVBpZkY2Zz09",
+      "week_type": "all"
+    },
+    {
+      "time": "10:15 - 11:50",
+      "subject": "Іноземна мова (Група Степанечко)",
+      "type": "Практика",
+      "teacher": "Степанечко О.В.",
+      "room": "Онлайн",
+      "link": "https://us05web.zoom.us/j/6067662289?pwd=aDdMRTM5Y1ZVdmtZVEFyUTYycFJrZz09",
+      "week_type": "all"
+    },
+    {
+      "time": "12:05 - 13:35",
+      "subject": "Іноземна мова (Група Лисенко)",
+      "type": "Практика",
+      "teacher": "Лисенко",
+      "room": "Онлайн",
+      "link": "https://us05web.zoom.us/j/6096223911?pwd=aC9qb0dIc2pwei9DVG85OVBpZkY2Zz09",
+      "week_type": "odd"
+    },
+    {
+      "time": "12:05 - 13:35",
+      "subject": "Іноземна мова (Група Степанечко)",
+      "type": "Практика",
+      "teacher": "Степанечко О.В.",
+      "room": "Онлайн",
+      "link": "https://us05web.zoom.us/j/6067662289?pwd=aDdMRTM5Y1ZVdmtZVEFyUTYycFJrZz09",
+      "week_type": "odd"
+    }
+  ],
+  "friday": [
+    {
+      "time": "08:30 - 10:05",
+      "subject": "Математичний аналіз",
+      "type": "Практика",
+      "teacher": "проф. Семенов",
+      "room": "Онлайн",
+      "link": "https://us04web.zoom.us/j/77295415681?pwd=StO8ggcSvHHWNVS4K6zO7sHwNlfqua.1",
+      "week_type": "odd"
+    },
+    {
+      "time": "08:30 - 10:05",
+      "subject": "Алгебра та геометрія",
+      "type": "Практика",
+      "teacher": "ас. Костогриз Р.О.",
+      "room": "Онлайн",
+      "link": "https://us04web.zoom.us/j/7613754272?pwd=N2djYkxUazhuVGpOSTBKLzQxYkFIZz09",
+      "week_type": "even"
+    },
+    {
+      "time": "08:30 - 10:05",
+      "subject": "Алгебра та геометрія",
+      "type": "Практика",
+      "teacher": "ас. Браганець О.А.",
+      "room": "Онлайн",
+      "link": "https://us04web.zoom.us/j/76479733144?pwd=d0JOQ3ZxL3F6WUhad25xTi9NYmV4Zz09",
+      "week_type": "even"
+    },
+    {
+      "time": "10:15 - 11:50",
+      "subject": "Дискретна математика (П1)",
+      "type": "Практика",
+      "teacher": "доц. Трохимчук Р.М.",
+      "room": "Онлайн",
+      "link": "https://knu-ua.zoom.us/j/87542077807?pwd=a3U1eC9tcWNZZnFyZTBOY0VyanBuUT09",
+      "week_type": "odd"
+    },
+    {
+      "time": "10:15 - 11:50",
+      "subject": "Дискретна математика (П2)",
+      "type": "Практика",
+      "teacher": "Єфремов М.С.",
+      "room": "Онлайн",
+      "link": "https://knu-ua.zoom.us/j/7486881580?pwd=Uq2JYtpkCKB3L5dma7UoPLaIj3jiFP.1",
+      "week_type": "even"
+    },
+    {
+      "time": "12:05 - 13:35",
+      "subject": "Математичний аналіз",
+      "type": "Практика",
+      "teacher": "проф. Семенов",
+      "room": "Онлайн",
+      "link": "https://us04web.zoom.us/j/77295415681?pwd=StO8ggcSvHHWNVS4K6zO7sHwNlfqua.1",
+      "week_type": "all"
+    }
+  ],
+  "saturday": [
+    {
+      "time": "08:30 - 10:05",
+      "subject": "Математичний аналіз (за п'ятницю)",
+      "type": "Практика",
+      "teacher": "проф. Семенов",
+      "room": "Онлайн",
+      "link": "https://us04web.zoom.us/j/77295415681?pwd=StO8ggcSvHHWNVS4K6zO7sHwNlfqua.1",
+      "week_type": "odd"
+    },
+    {
+      "time": "08:30 - 10:05",
+      "subject": "Алгебра та геометрія (за п'ятницю)",
+      "type": "Практика",
+      "teacher": "ас. Костогриз Р.О.",
+      "room": "Онлайн",
+      "link": "https://us04web.zoom.us/j/7613754272?pwd=N2djYkxUazhuVGpOSTBKLzQxYkFIZz09",
+      "week_type": "even"
+    },
+    {
+      "time": "08:30 - 10:05",
+      "subject": "Алгебра та геометрія (за п'ятницю)",
+      "type": "Практика",
+      "teacher": "ас. Браганець О.А.",
+      "room": "Онлайн",
+      "link": "https://us04web.zoom.us/j/76479733144?pwd=d0JOQ3ZxL3F6WUhad25xTi9NYmV4Zz09",
+      "week_type": "even"
+    },
+    {
+      "time": "10:15 - 11:50",
+      "subject": "Дискретна математика (П1) (за п'ятницю)",
+      "type": "Практика",
+      "teacher": "доц. Трохимчук Р.М.",
+      "room": "Онлайн",
+      "link": "https://knu-ua.zoom.us/j/87542077807?pwd=a3U1eC9tcWNZZnFyZTBOY0VyanBuUT09",
+      "week_type": "odd"
+    },
+    {
+      "time": "10:15 - 11:50",
+      "subject": "Дискретна математика (П2) (за п'ятницю)",
+      "type": "Практика",
+      "teacher": "Єфремов М.С.",
+      "room": "Онлайн",
+      "link": "https://knu-ua.zoom.us/j/7486881580?pwd=Uq2JYtpkCKB3L5dma7UoPLaIj3jiFP.1",
+      "week_type": "even"
+    },
+    {
+      "time": "12:05 - 13:35",
+      "subject": "Математичний аналіз (за п'ятницю)",
+      "type": "Практика",
+      "teacher": "проф. Семенов",
+      "room": "Онлайн",
+      "link": "https://us04web.zoom.us/j/77295415681?pwd=StO8ggcSvHHWNVS4K6zO7sHwNlfqua.1",
+      "week_type": "all"
+    }
+  ]
+}
