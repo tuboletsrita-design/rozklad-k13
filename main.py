@@ -118,18 +118,30 @@ def render_ui():
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Розклад групи 🥥</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥥</text></svg>">
-        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         <style>
             :root {{
-                --bg-gradient: #09090b;
+                --bg: #09090b;
                 --card-bg: #121215;
                 --card-border: rgba(255, 255, 255, 0.08);
+                --btn-bg: #18181b;
+                --text-main: #f4f4f5;
+                --text-muted: #a1a1aa;
+                --accent-blue: #3b82f6;
                 --accent-purple: #a855f7;
                 --accent-cyan: #06b6d4;
                 --accent-pink: #ec4899;
-                --text-main: #f4f4f5;
-                --text-muted: #a1a1aa;
-                --live-glow: rgba(236, 72, 153, 0.3);
+                --badge-bg: rgba(255, 255, 255, 0.06);
+            }}
+
+            [data-theme="light"] {{
+                --bg: #f1f5f9;
+                --card-bg: #ffffff;
+                --card-border: rgba(0, 0, 0, 0.08);
+                --btn-bg: #e2e8f0;
+                --text-main: #0f172a;
+                --text-muted: #64748b;
+                --badge-bg: rgba(0, 0, 0, 0.05);
             }}
 
             * {{
@@ -140,124 +152,121 @@ def render_ui():
 
             body {{
                 font-family: 'Plus Jakarta Sans', sans-serif;
-                background-color: var(--bg-gradient);
+                background-color: var(--bg);
                 color: var(--text-main);
                 padding: 20px 15px 60px;
                 min-height: 100vh;
-                position: relative;
-                overflow-x: hidden;
-            }}
-
-            .bg-coconut {{
-                position: fixed;
-                font-size: 5rem;
-                opacity: 0.05;
-                user-select: none;
-                pointer-events: none;
-                z-index: 0;
-                filter: blur(1px);
-                animation: float 12s ease-in-out infinite alternate;
-            }}
-            .c1 {{ top: 8%; left: 5%; transform: rotate(-15deg); }}
-            .c2 {{ top: 60%; right: 4%; transform: rotate(25deg); animation-delay: -4s; }}
-            .c3 {{ bottom: 10%; left: 10%; transform: rotate(10deg); animation-delay: -7s; }}
-
-            @keyframes float {{
-                0% {{ transform: translateY(0) rotate(0deg); }}
-                100% {{ transform: translateY(-25px) rotate(15deg); }}
+                transition: background-color 0.3s ease, color 0.3s ease;
             }}
 
             .container {{
-                max-width: 850px;
+                max-width: 1200px;
                 margin: 0 auto;
-                position: relative;
-                z-index: 1;
             }}
 
             header {{
-                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
                 margin-bottom: 25px;
+                position: relative;
+            }}
+
+            .theme-toggle {{
+                position: absolute;
+                top: 0;
+                right: 0;
+                background: var(--btn-bg);
+                border: 1px solid var(--card-border);
+                color: var(--text-main);
+                font-size: 1.2rem;
+                padding: 8px 12px;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }}
+
+            .theme-toggle:hover {{
+                transform: scale(1.1);
             }}
 
             h1 {{
-                font-size: 2.2rem;
+                font-size: 2rem;
                 font-weight: 800;
-                color: #ffffff;
                 display: flex;
                 align-items: center;
-                justify-content: center;
-                gap: 12px;
+                gap: 10px;
             }}
 
             .week-info {{
                 display: inline-flex;
                 align-items: center;
                 gap: 8px;
-                background: #18181b;
+                background: var(--card-bg);
                 border: 1px solid var(--card-border);
-                padding: 8px 18px;
-                border-radius: 30px;
-                margin-top: 12px;
-                font-size: 0.9rem;
-                color: #e4e4e7;
+                padding: 6px 16px;
+                border-radius: 20px;
+                font-size: 0.85rem;
+                color: var(--text-muted);
             }}
 
             .week-info span {{
-                color: var(--accent-cyan);
+                color: var(--accent-blue);
                 font-weight: 700;
             }}
 
-            /* ДНІ ТИЖНЯ ФІЛЬТР */
+            /* ФІЛЬТРИ */
+            .controls-wrapper {{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 25px;
+            }}
+
             .days-filter {{
                 display: flex;
                 justify-content: center;
                 gap: 8px;
-                margin: 20px 0 15px;
                 flex-wrap: wrap;
             }}
 
             .day-btn {{
-                background: #18181b;
+                background: var(--card-bg);
                 border: 1px solid var(--card-border);
                 color: var(--text-muted);
-                padding: 8px 14px;
+                padding: 8px 16px;
                 border-radius: 12px;
                 font-family: inherit;
                 font-weight: 700;
                 font-size: 0.88rem;
                 cursor: pointer;
-                transition: all 0.25 ease;
+                transition: all 0.2s ease;
                 display: flex;
                 align-items: center;
-                gap: 5px;
+                gap: 6px;
             }}
 
             .day-btn:hover {{
-                background: #27272a;
-                color: #fff;
+                border-color: var(--accent-blue);
+                color: var(--text-main);
             }}
 
             .day-btn.active {{
-                background: var(--accent-cyan);
-                color: #000;
+                background: var(--accent-blue);
+                color: #ffffff;
                 border-color: transparent;
-                box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+                box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
             }}
 
-            .day-btn.is-today-btn {{
-                border-color: rgba(6, 182, 212, 0.5);
-            }}
-
-            /* ПІДГРУПИ ФІЛЬТР */
             .subgroup-filter {{
                 display: flex;
-                justify-content: center;
                 gap: 8px;
-                margin-bottom: 30px;
             }}
 
             .filter-btn {{
-                background: #18181b;
+                background: var(--card-bg);
                 border: 1px solid var(--card-border);
                 color: var(--text-muted);
                 padding: 6px 14px;
@@ -266,203 +275,194 @@ def render_ui():
                 font-size: 0.82rem;
                 font-weight: 600;
                 cursor: pointer;
-                transition: all 0.25s ease;
-            }}
-
-            .filter-btn:hover {{
-                background: #27272a;
-                color: #fff;
+                transition: all 0.2s ease;
             }}
 
             .filter-btn.active {{
                 background: var(--accent-purple);
-                color: #fff;
+                color: #ffffff;
                 border-color: transparent;
-                box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
             }}
 
-            .day-card {{
+            /* СТИЛЬ ВСІ ДНІ (КАНБАН) */
+            .kanban-grid {{
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 15px;
+                align-items: start;
+            }}
+
+            .kanban-column {{
                 background: var(--card-bg);
                 border: 1px solid var(--card-border);
-                border-radius: 20px;
-                padding: 22px;
-                margin-bottom: 25px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-                transition: transform 0.2s ease, border-color 0.3s ease;
+                border-radius: 16px;
+                padding: 14px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
             }}
 
-            .day-card.is-today {{
-                border-color: rgba(6, 182, 212, 0.4);
-                box-shadow: 0 0 25px rgba(6, 182, 212, 0.1);
-            }}
-
-            .day-header {{
+            .column-header {{
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                margin-bottom: 18px;
-                padding-bottom: 12px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            }}
-
-            .day-title {{
-                font-size: 1.35rem;
-                font-weight: 700;
-                color: #f4f4f5;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }}
-
-            .today-badge {{
-                background: var(--accent-cyan);
-                color: #000;
-                font-size: 0.75rem;
+                padding-bottom: 10px;
+                border-bottom: 1px solid var(--card-border);
                 font-weight: 800;
-                padding: 3px 10px;
-                border-radius: 20px;
+                font-size: 1.05rem;
+            }}
+
+            .day-dot {{
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                display: inline-block;
+            }}
+
+            .dot-mon {{ background: #3b82f6; }}
+            .dot-tue {{ background: #10b981; }}
+            .dot-wed {{ background: #f59e0b; }}
+            .dot-thu {{ background: #8b5cf6; }}
+            .dot-fri {{ background: #ec4899; }}
+            .dot-sat {{ background: #06b6d4; }}
+
+            .column-header .today-badge {{
+                background: var(--accent-blue);
+                color: #fff;
+                font-size: 0.68rem;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-weight: 700;
+            }}
+
+            /* КАРТОЧКА ПАРИ В КАНБАНІ */
+            .kanban-card {{
+                background: var(--btn-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 12px;
+                padding: 12px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                position: relative;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }}
+
+            .kanban-card:hover {{
+                transform: translateY(-2px);
+            }}
+
+            .kanban-card.is-live {{
+                border-color: var(--accent-pink);
+                box-shadow: 0 0 15px rgba(236, 72, 153, 0.25);
+            }}
+
+            .card-top {{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }}
+
+            .card-type {{
+                font-size: 0.68rem;
+                font-weight: 700;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
-            }}
-
-            .lesson {{
-                position: relative;
-                background: #18181b;
-                border: 1px solid rgba(255, 255, 255, 0.05);
-                border-radius: 14px;
-                padding: 16px 18px;
-                margin-bottom: 12px;
-                transition: all 0.3s ease;
-            }}
-
-            .lesson:last-child {{
-                margin-bottom: 0;
-            }}
-
-            .lesson.is-live {{
-                background: #201322;
-                border-color: rgba(236, 72, 153, 0.6);
-                box-shadow: 0 0 20px var(--live-glow);
-                animation: pulse-border 2s infinite alternate;
-            }}
-
-            @keyframes pulse-border {{
-                0% {{ border-color: rgba(236, 72, 153, 0.4); }}
-                100% {{ border-color: rgba(236, 72, 153, 0.8); }}
-            }}
-
-            .live-indicator {{
-                position: absolute;
-                top: 14px;
-                right: 14px;
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                font-size: 0.75rem;
-                font-weight: 700;
-                color: #f472b6;
-            }}
-
-            .live-dot {{
-                width: 8px;
-                height: 8px;
-                background: #f472b6;
-                border-radius: 50%;
-                box-shadow: 0 0 8px #f472b6;
-                animation: blink 1.2s infinite;
-            }}
-
-            @keyframes blink {{
-                0%, 100% {{ opacity: 1; }}
-                50% {{ opacity: 0.3; }}
-            }}
-
-            .lesson-time {{
-                font-weight: 700;
-                color: #38bdf8;
-                font-size: 0.95rem;
-                margin-bottom: 6px;
-            }}
-
-            .lesson-subject {{
-                font-size: 1.1rem;
-                font-weight: 700;
-                color: #ffffff;
-                margin-bottom: 6px;
-            }}
-
-            .lesson-type {{
-                display: inline-block;
-                font-size: 0.75rem;
-                font-weight: 600;
-                padding: 2px 8px;
-                border-radius: 6px;
-                background: rgba(168, 85, 247, 0.2);
-                color: #c084fc;
-                margin-left: 8px;
-            }}
-
-            .lesson-meta {{
-                font-size: 0.88rem;
                 color: var(--text-muted);
-                display: flex;
-                flex-wrap: wrap;
-                gap: 15px;
-                margin-top: 8px;
             }}
 
-            .link-btn {{
+            .card-subgroup {{
+                font-size: 0.68rem;
+                font-weight: 800;
+                background: var(--badge-bg);
+                padding: 2px 6px;
+                border-radius: 6px;
+            }}
+
+            .card-title {{
+                font-size: 0.95rem;
+                font-weight: 700;
+                line-height: 1.25;
+            }}
+
+            .card-teacher {{
+                font-size: 0.78rem;
+                color: var(--text-muted);
+            }}
+
+            .card-time {{
+                font-size: 0.75rem;
+                font-weight: 700;
+                color: var(--accent-cyan);
+            }}
+
+            .card-actions {{
+                display: flex;
+                gap: 6px;
+                margin-top: 4px;
+            }}
+
+            .btn-zoom {{
+                background: #2563eb;
+                color: #ffffff;
+                text-decoration: none;
+                font-size: 0.75rem;
+                font-weight: 700;
+                padding: 5px 12px;
+                border-radius: 8px;
                 display: inline-flex;
                 align-items: center;
-                gap: 6px;
-                margin-top: 12px;
-                padding: 8px 16px;
-                background: #27272a;
-                border: 1px solid var(--accent-cyan);
-                color: #38bdf8;
+                gap: 4px;
+                transition: opacity 0.2s;
+            }}
+
+            .btn-meet {{
+                background: #059669;
+                color: #ffffff;
                 text-decoration: none;
-                border-radius: 10px;
-                font-size: 0.85rem;
+                font-size: 0.75rem;
                 font-weight: 700;
-                transition: all 0.3s ease;
+                padding: 5px 12px;
+                border-radius: 8px;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
             }}
 
-            .link-btn:hover {{
-                background: var(--accent-cyan);
-                color: #000;
+            .btn-zoom:hover, .btn-meet:hover {{
+                opacity: 0.88;
             }}
 
-            .no-lessons {{
-                text-align: center;
-                padding: 40px 20px;
-                background: var(--card-bg);
-                border: 1px solid var(--card-border);
-                border-radius: 20px;
-                color: var(--text-muted);
-                font-weight: 600;
+            /* ОДИНОЧНИЙ ДЕНЬ (СПИСОК) */
+            .single-day-wrapper {{
+                max-width: 650px;
+                margin: 0 auto;
+            }}
+
+            @media (max-width: 768px) {{
+                .kanban-grid {{
+                    grid-template-columns: 1fr;
+                }}
             }}
         </style>
     </head>
     <body>
 
-        <div class="bg-coconut c1">🥥</div>
-        <div class="bg-coconut c2">🥥</div>
-        <div class="bg-coconut c3">🥥</div>
-
         <div class="container">
             <header>
+                <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙</button>
                 <h1>🥥 Розклад Занять 🥥</h1>
                 <div class="week-info">Тиждень: <span>{week_label}</span></div>
             </header>
 
-            <div class="days-filter" id="days-filter-container">
-                <!-- Кнопки днів додадуться через JS -->
-            </div>
+            <div class="controls-wrapper">
+                <div class="days-filter" id="days-filter-container"></div>
 
-            <div class="subgroup-filter">
-                <button class="filter-btn active" onclick="setSubgroupFilter('all')">Повний розклад</button>
-                <button class="filter-btn" onclick="setSubgroupFilter('П1')">Підгрупа 1 (П1)</button>
-                <button class="filter-btn" onclick="setSubgroupFilter('П2')">Підгрупа 2 (П2)</button>
+                <div class="subgroup-filter">
+                    <button class="filter-btn active" onclick="setSubgroupFilter('all')">Повний розклад</button>
+                    <button class="filter-btn" onclick="setSubgroupFilter('П1')">Підгрупа 1 (П1)</button>
+                    <button class="filter-btn" onclick="setSubgroupFilter('П2')">Підгрупа 2 (П2)</button>
+                </div>
             </div>
 
             <div id="schedule-container">Завантаження розкладу...</div>
@@ -470,7 +470,7 @@ def render_ui():
 
         <script>
             let currentSubgroup = 'all';
-            let selectedDay = 'today'; // 'today', 'all', або конкретний день 'monday'
+            let selectedDay = 'all'; 
             let scheduleData = null;
 
             const daysMapUa = {{
@@ -482,6 +482,24 @@ def render_ui():
                 monday: 'Понеділок', tuesday: 'Вівторок', wednesday: 'Середа',
                 thursday: 'Четвер', friday: "П'ятниця", saturday: 'Субота'
             }};
+
+            const dayDotClasses = {{
+                monday: 'dot-mon', tuesday: 'dot-tue', wednesday: 'dot-wed',
+                thursday: 'dot-thu', friday: 'dot-fri', saturday: 'dot-sat'
+            }};
+
+            function toggleTheme() {{
+                const currentTheme = document.body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                document.body.setAttribute('data-theme', newTheme);
+                document.getElementById('theme-btn').innerText = newTheme === 'light' ? '☀️' : '🌙';
+                localStorage.setItem('theme', newTheme);
+            }}
+
+            // Завантаження збереженої теми
+            if (localStorage.getItem('theme') === 'light') {{
+                toggleTheme();
+            }}
 
             function setDayFilter(day) {{
                 selectedDay = day;
@@ -504,7 +522,10 @@ def render_ui():
                 const today = scheduleData.today;
 
                 let html = `
-                    <button class="day-btn ${{selectedDay === 'today' ? 'active' : ''}} is-today-btn" onclick="setDayFilter('today')">
+                    <button class="day-btn ${{selectedDay === 'all' ? 'active' : ''}}" onclick="setDayFilter('all')">
+                        📊 Всі дні
+                    </button>
+                    <button class="day-btn ${{selectedDay === 'today' ? 'active' : ''}}" onclick="setDayFilter('today')">
                         ✨ Сьогодні
                     </button>
                 `;
@@ -514,24 +535,17 @@ def render_ui():
                     const isActive = (selectedDay === dayKey);
 
                     html += `
-                        <button class="day-btn ${{isActive ? 'active' : ''}} ${{isTodayDay ? 'is-today-btn' : ''}}" onclick="setDayFilter('${{dayKey}}')">
+                        <button class="day-btn ${{isActive ? 'active' : ''}}" onclick="setDayFilter('${{dayKey}}')">
                             ${{dayShort}}
                         </button>
                     `;
                 }}
-
-                html += `
-                    <button class="day-btn ${{selectedDay === 'all' ? 'active' : ''}}" onclick="setDayFilter('all')">
-                        📅 Всі дні
-                    </button>
-                `;
 
                 container.innerHTML = html;
             }}
 
             function isLessonLive(timeStr, isToday) {{
                 if (!isToday) return false;
-
                 try {{
                     const [startStr, endStr] = timeStr.split(' - ');
                     const [startH, startM] = startStr.split(':').map(Number);
@@ -554,74 +568,110 @@ def render_ui():
                 const container = document.getElementById('schedule-container');
                 container.innerHTML = '';
 
-                let daysToDisplay = [];
+                // ЯКЩО ОБРАНО "ВСІ ДНІ" -> РЕНДЕРИМО КАНБАН
+                if (selectedDay === 'all') {{
+                    let gridHtml = '<div class="kanban-grid">';
 
-                if (selectedDay === 'today') {{
-                    daysToDisplay = [scheduleData.today];
-                }} else if (selectedDay === 'all') {{
-                    daysToDisplay = Object.keys(scheduleData.schedule);
-                }} else {{
-                    daysToDisplay = [selectedDay];
-                }}
+                    for (const [day, lessons] of Object.entries(scheduleData.schedule)) {{
+                        const isToday = (day === scheduleData.today);
 
-                let renderedCount = 0;
+                        const filtered = lessons.filter(l => {{
+                            if (currentSubgroup === 'all') return true;
+                            if (l.subject.includes('(П1)') && currentSubgroup === 'П2') return false;
+                            if (l.subject.includes('(П2)') && currentSubgroup === 'П1') return false;
+                            return true;
+                        }});
 
-                for (const day of daysToDisplay) {{
-                    const lessons = scheduleData.schedule[day] || [];
-                    const isToday = (day === scheduleData.today);
-
-                    const filteredLessons = lessons.filter(l => {{
-                        if (currentSubgroup === 'all') return true;
-                        if (l.subject.includes('(П1)') && currentSubgroup === 'П2') return false;
-                        if (l.subject.includes('(П2)') && currentSubgroup === 'П1') return false;
-                        return true;
-                    }});
-
-                    if (filteredLessons.length === 0 && selectedDay !== 'today' && selectedDay !== day) continue;
-
-                    renderedCount++;
-
-                    let lessonsHtml = '';
-                    if (filteredLessons.length === 0) {{
-                        lessonsHtml = `<div style="color: var(--text-muted); font-size: 0.9rem; padding: 10px 0;">🎉 Немає пар на цей день!</div>`;
-                    }} else {{
-                        lessonsHtml = filteredLessons.map(l => {{
+                        let cardsHtml = filtered.map(l => {{
                             const live = isLessonLive(l.time, isToday);
+                            const isZoom = l.link && l.link.includes('zoom');
+                            const btnClass = isZoom ? 'btn-zoom' : 'btn-meet';
+                            const btnText = isZoom ? '🎥 Zoom' : '🟢 Meet';
+
+                            let subGroupBadge = '';
+                            if (l.subject.includes('(П1)')) subGroupBadge = '<span class="card-subgroup">1 ПГ</span>';
+                            if (l.subject.includes('(П2)')) subGroupBadge = '<span class="card-subgroup">2 ПГ</span>';
 
                             return `
-                                <div class="lesson ${{live ? 'is-live' : ''}}">
-                                    ${{live ? '<div class="live-indicator"><div class="live-dot"></div> ЗАРАЗ ЙДЕ ПАРА</div>' : ''}}
-                                    <div class="lesson-time">⏱ ${{l.time}}</div>
-                                    <div class="lesson-subject">
-                                        ${{l.subject}}
-                                        <span class="lesson-type">${{l.type}}</span>
+                                <div class="kanban-card ${{live ? 'is-live' : ''}}">
+                                    <div class="card-top">
+                                        <span class="card-type">${{l.type}}</span>
+                                        ${{subGroupBadge}}
                                     </div>
-                                    <div class="lesson-meta">
-                                        <span>👨‍‍🏫 ${{l.teacher}}</span>
-                                        <span>📍 ${{l.room}}</span>
-                                    </div>
-                                    ${{l.link ? `<a class="link-btn" href="${{l.link}}" target="_blank">🔗 Приєднатися до пари</a>` : `<span style="font-size: 0.8rem; color: #52525b; display: block; margin-top: 8px;">🔗 Посилання ще не додано</span>`}}
+                                    <div class="card-title">${{l.subject.replace('(П1)', '').replace('(П2)', '')}}</div>
+                                    <div class="card-teacher">${{l.teacher}}</div>
+                                    <div class="card-time">⏱ ${{l.time}}</div>
+                                    ${{l.link ? `<div class="card-actions"><a href="${{l.link}}" target="_blank" class="${{btnClass}}">${{btnText}}</a></div>` : ''}}
                                 </div>
                             `;
                         }}).join('');
+
+                        gridHtml += `
+                            <div class="kanban-column">
+                                <div class="column-header">
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span class="day-dot ${{dayDotClasses[day] || ''}}"></span>
+                                        ${{daysMapUa[day] || day}}
+                                    </div>
+                                    ${{isToday ? '<span class="today-badge">сьогодні</span>' : ''}}
+                                </div>
+                                ${{cardsHtml || '<div style="font-size:0.8rem; color:var(--text-muted); text-align:center; padding:10px;">Пар немає</div>'}}
+                            </div>
+                        `;
                     }}
 
-                    container.innerHTML += `
-                        <div class="day-card ${{isToday ? 'is-today' : ''}}">
-                            <div class="day-header">
-                                <h2 class="day-title">
-                                    ${{daysFullUa[day] || day}}
-                                </h2>
-                                ${{isToday ? '<span class="today-badge">Сьогодні</span>' : ''}}
-                            </div>
-                            ${{lessonsHtml}}
-                        </div>
-                    `;
+                    gridHtml += '</div>';
+                    container.innerHTML = gridHtml;
+                    return;
                 }}
 
-                if (renderedCount === 0) {{
-                    container.innerHTML = `<div class="no-lessons">🎉 Пар на обраний день немає!</div>`;
+                // ІНАКШЕ (ОДИН ДЕНЬ АБО СЬОГОДНІ)
+                const targetDay = (selectedDay === 'today') ? scheduleData.today : selectedDay;
+                const lessons = scheduleData.schedule[targetDay] || [];
+                const isToday = (targetDay === scheduleData.today);
+
+                const filtered = lessons.filter(l => {{
+                    if (currentSubgroup === 'all') return true;
+                    if (l.subject.includes('(П1)') && currentSubgroup === 'П2') return false;
+                    if (l.subject.includes('(П2)') && currentSubgroup === 'П1') return false;
+                    return true;
+                }});
+
+                let listHtml = `<div class="single-day-wrapper"><div class="kanban-column">
+                    <div class="column-header">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span class="day-dot ${{dayDotClasses[targetDay] || ''}}"></span>
+                            ${{daysFullUa[targetDay] || targetDay}}
+                        </div>
+                        ${{isToday ? '<span class="today-badge">сьогодні</span>' : ''}}
+                    </div>
+                `;
+
+                if (filtered.length === 0) {{
+                    listHtml += `<div style="text-align:center; padding:20px; color:var(--text-muted);">🎉 Пар немає!</div>`;
+                }} else {{
+                    listHtml += filtered.map(l => {{
+                        const live = isLessonLive(l.time, isToday);
+                        const isZoom = l.link && l.link.includes('zoom');
+                        const btnClass = isZoom ? 'btn-zoom' : 'btn-meet';
+                        const btnText = isZoom ? '🎥 Zoom' : '🟢 Meet';
+
+                        return `
+                            <div class="kanban-card ${{live ? 'is-live' : ''}}" style="padding:16px;">
+                                <div class="card-top">
+                                    <span class="card-type">${{l.type}}</span>
+                                    <span class="card-time">⏱ ${{l.time}}</span>
+                                </div>
+                                <div class="card-title" style="font-size:1.1rem; margin:4px 0;">${{l.subject}}</div>
+                                <div class="card-teacher">👨‍🏫 ${{l.teacher}} | 📍 ${{l.room}}</div>
+                                ${{l.link ? `<div class="card-actions" style="margin-top:10px;"><a href="${{l.link}}" target="_blank" class="${{btnClass}}">${{btnText}}</a></div>` : ''}}
+                            </div>
+                        `;
+                    }}).join('');
                 }}
+
+                listHtml += '</div></div>';
+                container.innerHTML = listHtml;
             }}
 
             async function fetchSchedule() {{
@@ -641,11 +691,5 @@ def render_ui():
 
 if __name__ == "__main__":
     import uvicorn
-
-    print("\n" + "=" * 50)
-    print("🚀 СЕРВЕР ЗАПУЩЕНО!")
-    print("🔗 Твоє посилання на сайт: http://127.0.0.1:8000")
-    print("🔗 Запит посилання на поточну пару: http://127.0.0.1:8000/get-link")
-    print("=" * 50 + "\n")
 
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
