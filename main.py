@@ -163,7 +163,6 @@ def render_ui():
                 transition: background-color 0.3s ease, color 0.3s ease;
             }}
 
-            /* ЯСКРАВІ КОКОСИ НА ФОНІ */
             .bg-coconut {{
                 position: fixed;
                 font-size: 5.5rem;
@@ -247,7 +246,6 @@ def render_ui():
                 font-weight: 700;
             }}
 
-            /* ГОЛОВНЕ НАВІГАЦІЙНЕ МЕНЮ */
             .main-nav {{
                 display: flex;
                 justify-content: center;
@@ -284,7 +282,6 @@ def render_ui():
                 box-shadow: 0 4px 16px rgba(168, 85, 247, 0.35);
             }}
 
-            /* ФІЛЬТРИ ДЛЯ РОЗКЛАДУ */
             .controls-wrapper {{
                 display: flex;
                 flex-direction: column;
@@ -349,7 +346,6 @@ def render_ui():
                 border-color: transparent;
             }}
 
-            /* КАНБАН */
             .kanban-grid {{
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -416,9 +412,44 @@ def render_ui():
                 transform: translateY(-2px);
             }}
 
+            /* СТИЛІ ДЛЯ ПАРИ, ЯКА ЙДЕ ЗАКРАЗ */
             .kanban-card.is-live {{
-                border-color: var(--accent-pink);
-                box-shadow: 0 0 15px rgba(236, 72, 153, 0.25);
+                border-color: #ec4899;
+                box-shadow: 0 0 20px rgba(236, 72, 153, 0.35);
+                animation: pulse-live 2s infinite alternate;
+            }}
+
+            @keyframes pulse-live {{
+                0% {{ border-color: rgba(236, 72, 153, 0.5); }}
+                100% {{ border-color: rgba(236, 72, 153, 1); }}
+            }}
+
+            .live-badge-bar {{
+                background: linear-gradient(90deg, #ec4899, #a855f7);
+                color: #ffffff;
+                font-size: 0.72rem;
+                font-weight: 800;
+                padding: 4px 8px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }}
+
+            .timer-box {{
+                background: rgba(236, 72, 153, 0.15);
+                border: 1px solid rgba(236, 72, 153, 0.4);
+                color: #f472b6;
+                padding: 6px 10px;
+                border-radius: 8px;
+                font-size: 0.8rem;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
             }}
 
             .card-top {{
@@ -492,7 +523,6 @@ def render_ui():
                 gap: 4px;
             }}
 
-            /* СТИЛІ ДЛЯ IFRAME ТАБЛИЦЬ */
             .iframe-container {{
                 background: var(--card-bg);
                 border: 1px solid var(--card-border);
@@ -529,7 +559,6 @@ def render_ui():
     </head>
     <body>
 
-        <!-- 8 КОКОСІВ НА ФОНІ -->
         <div class="bg-coconut c1">🥥</div>
         <div class="bg-coconut c2">🥥</div>
         <div class="bg-coconut c3">🥥</div>
@@ -546,7 +575,6 @@ def render_ui():
                 <div class="week-info">Тиждень: <span>{week_label}</span></div>
             </header>
 
-            <!-- НАВІГАЦІЙНІ ТАБИ -->
             <div class="main-nav">
                 <button class="nav-btn active" onclick="switchSection('schedule')" id="nav-schedule">
                     📅 Розклад
@@ -559,7 +587,6 @@ def render_ui():
                 </button>
             </div>
 
-            <!-- СЕКЦІЯ 1: РОЗКЛАД -->
             <div id="section-schedule">
                 <div class="controls-wrapper">
                     <div class="days-filter" id="days-filter-container"></div>
@@ -574,14 +601,12 @@ def render_ui():
                 <div id="schedule-container">Завантаження розкладу...</div>
             </div>
 
-            <!-- СЕКЦІЯ 2: ЗАПИСИ ЛЕКЦІЙ / ПРАКТИК -->
             <div id="section-recordings" style="display: none;">
                 <div class="iframe-container">
                     <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTDpDnWf26AWuZiVqtpxx4wCeYnak_z1YjyiXWFs8-NzlutOP9eQQNCrED97hCaHb-Y6CW0Ur30N-1Q/pubhtml?widget=true&amp;headers=false"></iframe>
                 </div>
             </div>
 
-            <!-- СЕКЦІЯ 3: ДЗ -->
             <div id="section-homework" style="display: none;">
                 <div class="iframe-container">
                     <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT3jeYJV7pxlUEGO4uNDNeYFkBoOR7w1-lCDMymQ7CfLoH5dtEI7nLpGk_US29zc_KUSDiPzkr54Xu9/pubhtml?widget=true&amp;headers=false"></iframe>
@@ -678,22 +703,34 @@ def render_ui():
                 container.innerHTML = html;
             }}
 
-            function isLessonLive(timeStr, isToday) {{
-                if (!isToday) return false;
+            // ДЕТАЛЬНИЙ РОЗРАХУНОК СТАТУСУ ТА ТАЙМЕРА ДЛЯ ПАРИ
+            function getLessonStatus(timeStr, isToday) {{
+                if (!isToday) return {{ isLive: false, timeLeftText: '' }};
+
                 try {{
                     const [startStr, endStr] = timeStr.split(' - ');
                     const [startH, startM] = startStr.split(':').map(Number);
                     const [endH, endM] = endStr.split(':').map(Number);
 
                     const now = new Date();
-                    const currentMinutes = now.getHours() * 60 + now.getMinutes();
-                    const startMinutes = startH * 60 + startM;
-                    const endMinutes = endH * 60 + endM;
+                    const nowSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+                    const startSec = startH * 3600 + startM * 60;
+                    const endSec = endH * 3600 + endM * 60;
 
-                    return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
+                    if (nowSec >= startSec && nowSec <= endSec) {{
+                        const diffSec = endSec - nowSec;
+                        const minLeft = Math.floor(diffSec / 60);
+                        const secLeft = diffSec % 60;
+                        return {{
+                            isLive: true,
+                            timeLeftText: `⏳ До кінця пари: ${{minLeft}} хв ${{secLeft < 10 ? '0' : ''}}${{secLeft}} сек`
+                        }};
+                    }}
                 }} catch (e) {{
-                    return false;
+                    return {{ isLive: false, timeLeftText: '' }};
                 }}
+
+                return {{ isLive: false, timeLeftText: '' }};
             }}
 
             function renderSchedule() {{
@@ -716,7 +753,7 @@ def render_ui():
                         }});
 
                         let cardsHtml = filtered.map(l => {{
-                            const live = isLessonLive(l.time, isToday);
+                            const status = getLessonStatus(l.time, isToday);
                             const isZoom = l.link && l.link.includes('zoom');
                             const btnClass = isZoom ? 'btn-zoom' : 'btn-meet';
                             const btnText = isZoom ? '🎥 Zoom' : '🟢 Meet';
@@ -726,7 +763,10 @@ def render_ui():
                             if (l.subject.includes('(П2)')) subGroupBadge = '<span class="card-subgroup">2 ПГ</span>';
 
                             return `
-                                <div class="kanban-card ${{live ? 'is-live' : ''}}">
+                                <div class="kanban-card ${{status.isLive ? 'is-live' : ''}}">
+                                    ${{status.isLive ? '<div class="live-badge-bar">🔥 ЗАРАЗ ЙДЕ ПАРА</div>' : ''}}
+                                    ${{status.isLive ? `<div class="timer-box">${{status.timeLeftText}}</div>` : ''}}
+
                                     <div class="card-top">
                                         <span class="card-type">${{l.type}}</span>
                                         ${{subGroupBadge}}
@@ -783,13 +823,16 @@ def render_ui():
                     listHtml += `<div style="text-align:center; padding:20px; color:var(--text-muted);">🎉 Пар немає!</div>`;
                 }} else {{
                     listHtml += filtered.map(l => {{
-                        const live = isLessonLive(l.time, isToday);
+                        const status = getLessonStatus(l.time, isToday);
                         const isZoom = l.link && l.link.includes('zoom');
                         const btnClass = isZoom ? 'btn-zoom' : 'btn-meet';
                         const btnText = isZoom ? '🎥 Zoom' : '🟢 Meet';
 
                         return `
-                            <div class="kanban-card ${{live ? 'is-live' : ''}}" style="padding:16px;">
+                            <div class="kanban-card ${{status.isLive ? 'is-live' : ''}}" style="padding:16px;">
+                                ${{status.isLive ? '<div class="live-badge-bar">🔥 ЗАРАЗ ЙДЕ ПАРА</div>' : ''}}
+                                ${{status.isLive ? `<div class="timer-box" style="font-size:0.9rem; padding:8px;">${{status.timeLeftText}}</div>` : ''}}
+
                                 <div class="card-top">
                                     <span class="card-type">${{l.type}}</span>
                                     <span class="card-time">⏱ ${{l.time}}</span>
@@ -814,6 +857,8 @@ def render_ui():
             }}
 
             fetchSchedule();
+            // ОНОВЛЮЄМО ТАЙМЕР ЩОСЕКУНДИ
+            setInterval(renderSchedule, 1000);
             setInterval(fetchSchedule, 60000);
         </script>
     </body>
