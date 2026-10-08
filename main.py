@@ -484,6 +484,22 @@ def render_ui():
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                gap: 6px;
+            }}
+
+            .card-type-group {{
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }}
+
+            .lesson-num-badge {{
+                font-size: 0.68rem;
+                font-weight: 800;
+                background: var(--accent-blue);
+                color: #ffffff;
+                padding: 2px 6px;
+                border-radius: 6px;
             }}
 
             .card-type {{
@@ -628,7 +644,7 @@ def render_ui():
                         <button class="filter-btn sub-btn" onclick="setSubgroupFilter('П2')">2 ПГ (П2)</button>
                     </div>
 
-                    <!-- ФІЛЬТР ВИКЛАДАЧІВ АГ (Браганець / Костогриз) -->
+                    <!-- ФІЛЬТР ВИКЛАДАЧІВ АГ -->
                     <div class="teacher-filter-group">
                         <span class="filter-label">Викладач АГ:</span>
                         <button class="filter-btn ag-btn active" onclick="setAgTeacherFilter('all')">Всі</button>
@@ -636,7 +652,7 @@ def render_ui():
                         <button class="filter-btn ag-btn" onclick="setAgTeacherFilter('Костогриз')">Костогриз</button>
                     </div>
 
-                    <!-- ФІЛЬТР ВИКЛАДАЧІВ АНГЛІЙСЬКОЇ (Лисенко / Степанечко) -->
+                    <!-- ФІЛЬТР ВИКЛАДАЧІВ АНГЛІЙСЬКОЇ -->
                     <div class="teacher-filter-group">
                         <span class="filter-label">Англійська:</span>
                         <button class="filter-btn eng-btn active" onclick="setEngTeacherFilter('all')">Всі</button>
@@ -768,6 +784,19 @@ def render_ui():
                 container.innerHTML = html;
             }}
 
+            // ВИЗНАЧЕННЯ НОМЕРА ПАРИ ЗА ЧАСОМ
+            function getLessonNumber(timeStr) {{
+                if (!timeStr) return '';
+                const startStr = timeStr.split(' - ')[0].trim();
+
+                if (startStr.startsWith('08:') || startStr.startsWith('8:')) return '1 пара';
+                if (startStr.startsWith('10:')) return '2 пара';
+                if (startStr.startsWith('12:')) return '3 пара';
+                if (startStr.startsWith('14:')) return '4 пара';
+
+                return '';
+            }}
+
             function getLessonStatus(timeStr, isToday) {{
                 if (!isToday) return {{ isLive: false, timeLeftText: '' }};
 
@@ -832,6 +861,7 @@ def render_ui():
 
                         let cardsHtml = filtered.map(l => {{
                             const status = getLessonStatus(l.time, isToday);
+                            const lessonNum = getLessonNumber(l.time);
                             const isZoom = l.link && l.link.includes('zoom');
                             const btnClass = isZoom ? 'btn-zoom' : 'btn-meet';
                             const btnText = isZoom ? '🎥 Zoom' : '🟢 Meet';
@@ -846,7 +876,10 @@ def render_ui():
                                     ${{status.isLive ? `<div class="timer-box">${{status.timeLeftText}}</div>` : ''}}
 
                                     <div class="card-top">
-                                        <span class="card-type">${{l.type}}</span>
+                                        <div class="card-type-group">
+                                            ${{lessonNum ? `<span class="lesson-num-badge">${{lessonNum}}</span>` : ''}}
+                                            <span class="card-type">${{l.type}}</span>
+                                        </div>
                                         ${{subGroupBadge}}
                                     </div>
                                     <div class="card-title">${{l.subject.replace('(П1)', '').replace('(П2)', '')}}</div>
@@ -896,6 +929,7 @@ def render_ui():
                 }} else {{
                     listHtml += filtered.map(l => {{
                         const status = getLessonStatus(l.time, isToday);
+                        const lessonNum = getLessonNumber(l.time);
                         const isZoom = l.link && l.link.includes('zoom');
                         const btnClass = isZoom ? 'btn-zoom' : 'btn-meet';
                         const btnText = isZoom ? '🎥 Zoom' : '🟢 Meet';
@@ -906,7 +940,10 @@ def render_ui():
                                 ${{status.isLive ? `<div class="timer-box" style="font-size:0.9rem; padding:8px;">${{status.timeLeftText}}</div>` : ''}}
 
                                 <div class="card-top">
-                                    <span class="card-type">${{l.type}}</span>
+                                    <div class="card-type-group">
+                                        ${{lessonNum ? `<span class="lesson-num-badge">${{lessonNum}}</span>` : ''}}
+                                        <span class="card-type">${{l.type}}</span>
+                                    </div>
                                     <span class="card-time">⏱ ${{l.time}}</span>
                                 </div>
                                 <div class="card-title" style="font-size:1.1rem; margin:4px 0;">${{l.subject}}</div>
