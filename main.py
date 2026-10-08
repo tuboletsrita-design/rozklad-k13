@@ -286,7 +286,7 @@ def render_ui():
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                gap: 15px;
+                gap: 12px;
                 margin-bottom: 25px;
             }}
 
@@ -322,9 +322,19 @@ def render_ui():
                 box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
             }}
 
-            .subgroup-filter {{
+            .subgroup-filter, .teacher-filter-group {{
                 display: flex;
                 gap: 8px;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+            }}
+
+            .filter-label {{
+                font-size: 0.8rem;
+                font-weight: 700;
+                color: var(--text-muted);
+                margin-right: 4px;
             }}
 
             .filter-btn {{
@@ -340,9 +350,28 @@ def render_ui():
                 transition: all 0.2s ease;
             }}
 
+            .filter-btn:hover {{
+                color: var(--text-main);
+                border-color: var(--accent-purple);
+            }}
+
             .filter-btn.active {{
                 background: var(--accent-purple);
                 color: #ffffff;
+                border-color: transparent;
+            }}
+
+            .ag-btn.active {{
+                background: var(--accent-cyan);
+                color: #000000;
+                font-weight: 800;
+                border-color: transparent;
+            }}
+
+            .eng-btn.active {{
+                background: var(--accent-pink);
+                color: #ffffff;
+                font-weight: 800;
                 border-color: transparent;
             }}
 
@@ -412,7 +441,6 @@ def render_ui():
                 transform: translateY(-2px);
             }}
 
-            /* СТИЛІ ДЛЯ ПАРИ, ЯКА ЙДЕ ЗАКРАЗ */
             .kanban-card.is-live {{
                 border-color: #ec4899;
                 box-shadow: 0 0 20px rgba(236, 72, 153, 0.35);
@@ -589,12 +617,31 @@ def render_ui():
 
             <div id="section-schedule">
                 <div class="controls-wrapper">
+                    <!-- ФІЛЬТР ДНІВ -->
                     <div class="days-filter" id="days-filter-container"></div>
 
+                    <!-- ФІЛЬТР ПІДГРУПИ -->
                     <div class="subgroup-filter">
-                        <button class="filter-btn active" onclick="setSubgroupFilter('all')">Повний розклад</button>
-                        <button class="filter-btn" onclick="setSubgroupFilter('П1')">Підгрупа 1 (П1)</button>
-                        <button class="filter-btn" onclick="setSubgroupFilter('П2')">Підгрупа 2 (П2)</button>
+                        <span class="filter-label">Підгрупа:</span>
+                        <button class="filter-btn sub-btn active" onclick="setSubgroupFilter('all')">Всі</button>
+                        <button class="filter-btn sub-btn" onclick="setSubgroupFilter('П1')">1 ПГ (П1)</button>
+                        <button class="filter-btn sub-btn" onclick="setSubgroupFilter('П2')">2 ПГ (П2)</button>
+                    </div>
+
+                    <!-- ФІЛЬТР ВИКЛАДАЧІВ АГ -->
+                    <div class="teacher-filter-group">
+                        <span class="filter-label">Викладач АГ:</span>
+                        <button class="filter-btn ag-btn active" onclick="setAgTeacherFilter('all')">Всі</button>
+                        <button class="filter-btn ag-btn" onclick="setAgTeacherFilter('Шакотько')">Шакотько</button>
+                    </div>
+
+                    <!-- ФІЛЬТР ВИКЛАДАЧІВ АНГЛІЙСЬКОЇ -->
+                    <div class="teacher-filter-group">
+                        <span class="filter-label">Англійська:</span>
+                        <button class="filter-btn eng-btn active" onclick="setEngTeacherFilter('all')">Всі</button>
+                        <button class="filter-btn eng-btn" onclick="setEngTeacherFilter('Дороніна')">Дороніна</button>
+                        <button class="filter-btn eng-btn" onclick="setEngTeacherFilter('Красовська')">Красовська</button>
+                        <button class="filter-btn eng-btn" onclick="setEngTeacherFilter('Лисенко')">Лисенко</button>
                     </div>
                 </div>
 
@@ -618,6 +665,8 @@ def render_ui():
         <script>
             let currentSection = 'schedule';
             let currentSubgroup = 'all';
+            let currentAgTeacher = 'all';
+            let currentEngTeacher = 'all';
             let selectedDay = 'today'; 
             let scheduleData = null;
 
@@ -667,8 +716,24 @@ def render_ui():
 
             function setSubgroupFilter(filter) {{
                 currentSubgroup = filter;
-                document.querySelectorAll('.subgroup-filter .filter-btn').forEach(btn => {{
+                document.querySelectorAll('.subgroup-filter .sub-btn').forEach(btn => {{
                     btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${{filter}}'`));
+                }});
+                renderSchedule();
+            }}
+
+            function setAgTeacherFilter(teacher) {{
+                currentAgTeacher = teacher;
+                document.querySelectorAll('.ag-btn').forEach(btn => {{
+                    btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${{teacher}}'`));
+                }});
+                renderSchedule();
+            }}
+
+            function setEngTeacherFilter(teacher) {{
+                currentEngTeacher = teacher;
+                document.querySelectorAll('.eng-btn').forEach(btn => {{
+                    btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${{teacher}}'`));
                 }});
                 renderSchedule();
             }}
@@ -703,7 +768,6 @@ def render_ui():
                 container.innerHTML = html;
             }}
 
-            // ДЕТАЛЬНИЙ РОЗРАХУНОК СТАТУСУ ТА ТАЙМЕРА ДЛЯ ПАРИ
             function getLessonStatus(timeStr, isToday) {{
                 if (!isToday) return {{ isLive: false, timeLeftText: '' }};
 
@@ -733,6 +797,26 @@ def render_ui():
                 return {{ isLive: false, timeLeftText: '' }};
             }}
 
+            function filterLessons(lessons) {{
+                return lessons.filter(l => {{
+                    const subjectName = (l.subject || '').toLowerCase();
+                    const teacherName = (l.teacher || '').toLowerCase();
+
+                    if (currentSubgroup === 'П1' && l.subject.includes('(П2)')) return false;
+                    if (currentSubgroup === 'П2' && l.subject.includes('(П1)')) return false;
+
+                    if (currentAgTeacher !== 'all' && subjectName.includes('алгебра')) {{
+                        if (!teacherName.includes(currentAgTeacher.toLowerCase())) return false;
+                    }}
+
+                    if (currentEngTeacher !== 'all' && (subjectName.includes('іноземна') || subjectName.includes('англ'))) {{
+                        if (!teacherName.includes(currentEngTeacher.toLowerCase())) return false;
+                    }}
+
+                    return true;
+                }});
+            }}
+
             function renderSchedule() {{
                 if (!scheduleData) return;
 
@@ -744,13 +828,7 @@ def render_ui():
 
                     for (const [day, lessons] of Object.entries(scheduleData.schedule)) {{
                         const isToday = (day === scheduleData.today);
-
-                        const filtered = lessons.filter(l => {{
-                            if (currentSubgroup === 'all') return true;
-                            if (l.subject.includes('(П1)') && currentSubgroup === 'П2') return false;
-                            if (l.subject.includes('(П2)') && currentSubgroup === 'П1') return false;
-                            return true;
-                        }});
+                        const filtered = filterLessons(lessons);
 
                         let cardsHtml = filtered.map(l => {{
                             const status = getLessonStatus(l.time, isToday);
@@ -801,13 +879,7 @@ def render_ui():
                 const targetDay = (selectedDay === 'today') ? scheduleData.today : selectedDay;
                 const lessons = scheduleData.schedule[targetDay] || [];
                 const isToday = (targetDay === scheduleData.today);
-
-                const filtered = lessons.filter(l => {{
-                    if (currentSubgroup === 'all') return true;
-                    if (l.subject.includes('(П1)') && currentSubgroup === 'П2') return false;
-                    if (l.subject.includes('(П2)') && currentSubgroup === 'П1') return false;
-                    return true;
-                }});
+                const filtered = filterLessons(lessons);
 
                 let listHtml = `<div class="single-day-wrapper"><div class="kanban-column">
                     <div class="column-header">
@@ -857,7 +929,6 @@ def render_ui():
             }}
 
             fetchSchedule();
-            // ОНОВЛЮЄМО ТАЙМЕР ЩОСЕКУНДИ
             setInterval(renderSchedule, 1000);
             setInterval(fetchSchedule, 60000);
         </script>
