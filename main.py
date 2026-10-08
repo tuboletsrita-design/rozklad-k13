@@ -628,20 +628,20 @@ def render_ui():
                         <button class="filter-btn sub-btn" onclick="setSubgroupFilter('П2')">2 ПГ (П2)</button>
                     </div>
 
-                    <!-- ФІЛЬТР ВИКЛАДАЧІВ АГ -->
+                    <!-- ФІЛЬТР ВИКЛАДАЧІВ АГ (Браганець / Костогриз) -->
                     <div class="teacher-filter-group">
                         <span class="filter-label">Викладач АГ:</span>
                         <button class="filter-btn ag-btn active" onclick="setAgTeacherFilter('all')">Всі</button>
-                        <button class="filter-btn ag-btn" onclick="setAgTeacherFilter('Шакотько')">Шакотько</button>
+                        <button class="filter-btn ag-btn" onclick="setAgTeacherFilter('Браганець')">Браганець</button>
+                        <button class="filter-btn ag-btn" onclick="setAgTeacherFilter('Костогриз')">Костогриз</button>
                     </div>
 
-                    <!-- ФІЛЬТР ВИКЛАДАЧІВ АНГЛІЙСЬКОЇ -->
+                    <!-- ФІЛЬТР ВИКЛАДАЧІВ АНГЛІЙСЬКОЇ (Лисенко / Степанечко) -->
                     <div class="teacher-filter-group">
                         <span class="filter-label">Англійська:</span>
                         <button class="filter-btn eng-btn active" onclick="setEngTeacherFilter('all')">Всі</button>
-                        <button class="filter-btn eng-btn" onclick="setEngTeacherFilter('Дороніна')">Дороніна</button>
-                        <button class="filter-btn eng-btn" onclick="setEngTeacherFilter('Красовська')">Красовська</button>
                         <button class="filter-btn eng-btn" onclick="setEngTeacherFilter('Лисенко')">Лисенко</button>
+                        <button class="filter-btn eng-btn" onclick="setEngTeacherFilter('Степанечко')">Степанечко</button>
                     </div>
                 </div>
 
