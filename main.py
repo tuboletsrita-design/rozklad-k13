@@ -28,6 +28,8 @@ def get_full_schedule(week: str = None):
 
     filtered_schedule = {}
     for day, lessons in raw_schedule.items():
+        if day == "saturday":
+            continue
         day_lessons = [
             lesson
             for lesson in lessons
@@ -42,8 +44,8 @@ def get_full_schedule(week: str = None):
         2: "wednesday",
         3: "thursday",
         4: "friday",
-        5: "saturday",
-        6: "sunday",
+        5: "monday",
+        6: "monday",
     }
     today_key = days_map.get(now.weekday(), "monday")
 
@@ -414,7 +416,6 @@ def render_ui():
             .dot-wed {{ background: #f59e0b; }}
             .dot-thu {{ background: #8b5cf6; }}
             .dot-fri {{ background: #ec4899; }}
-            .dot-sat {{ background: #06b6d4; }}
 
             .column-header .today-badge {{
                 background: var(--accent-blue);
@@ -633,7 +634,7 @@ def render_ui():
 
             <div id="section-schedule">
                 <div class="controls-wrapper">
-                    <!-- ФІЛЬТР ДНІВ -->
+                    <!-- ФІЛЬТР ДНІВ (БЕЗ СУБОТИ) -->
                     <div class="days-filter" id="days-filter-container"></div>
 
                     <!-- ФІЛЬТР ПІДГРУПИ -->
@@ -686,19 +687,20 @@ def render_ui():
             let selectedDay = 'today'; 
             let scheduleData = null;
 
+            // ДНІ БЕЗ СУБОТИ
             const daysMapUa = {{
                 monday: 'Пн', tuesday: 'Вт', wednesday: 'Ср',
-                thursday: 'Чт', friday: "Пт", saturday: 'Сб'
+                thursday: 'Чт', friday: "Пт"
             }};
 
             const daysFullUa = {{
                 monday: 'Понеділок', tuesday: 'Вівторок', wednesday: 'Середа',
-                thursday: 'Четвер', friday: "П'ятниця", saturday: 'Субота'
+                thursday: 'Четвер', friday: "П'ятниця"
             }};
 
             const dayDotClasses = {{
                 monday: 'dot-mon', tuesday: 'dot-tue', wednesday: 'dot-wed',
-                thursday: 'dot-thu', friday: 'dot-fri', saturday: 'dot-sat'
+                thursday: 'dot-thu', friday: 'dot-fri'
             }};
 
             function switchSection(section) {{
@@ -784,7 +786,6 @@ def render_ui():
                 container.innerHTML = html;
             }}
 
-            // ВИЗНАЧЕННЯ НОМЕРА ПАРИ ЗА ЧАСОМ
             function getLessonNumber(timeStr) {{
                 if (!timeStr) return '';
                 const startStr = timeStr.split(' - ')[0].trim();
@@ -856,6 +857,7 @@ def render_ui():
                     let gridHtml = '<div class="kanban-grid">';
 
                     for (const [day, lessons] of Object.entries(scheduleData.schedule)) {{
+                        if (day === 'saturday') continue;
                         const isToday = (day === scheduleData.today);
                         const filtered = filterLessons(lessons);
 
