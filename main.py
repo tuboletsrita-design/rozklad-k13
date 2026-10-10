@@ -44,15 +44,17 @@ def get_full_schedule(week: str = None):
         2: "wednesday",
         3: "thursday",
         4: "friday",
-        5: "saturday",
-        6: "sunday",
+        5: "monday",  # В суботу показуємо понеділок
+        6: "monday",  # В неділю показуємо понеділок
     }
     today_key = days_map.get(now.weekday(), "monday")
+    is_weekend = now.weekday() in (5, 6)
 
     return {
         "current_week_type": current_week,
         "week_number": now.isocalendar()[1],
         "today": today_key,
+        "is_weekend": is_weekend,
         "current_time": now.strftime("%H:%M"),
         "schedule": filtered_schedule,
     }
@@ -62,15 +64,14 @@ def get_full_schedule(week: str = None):
 def get_current_lesson_link():
     """Повертає посилання на пару, яка йде просто зараз."""
     schedule_data = get_full_schedule()
-    today = schedule_data["today"]
 
-    # Якщо сьогодні вихідний (субота або неділя), пар немає
-    if today in ("saturday", "sunday"):
+    if schedule_data.get("is_weekend"):
         return {
             "status": "weekend",
-            "message": "Сьогодні вихідний день, пар немає",
+            "message": "Сьогодні вихідний день",
         }
 
+    today = schedule_data["today"]
     today_lessons = schedule_data["schedule"].get(today, [])
     now = datetime.now()
     current_minutes = now.hour * 60 + now.minute
@@ -701,7 +702,7 @@ def render_ui():
 
             const daysFullUa = {{
                 monday: 'Понеділок', tuesday: 'Вівторок', wednesday: 'Середа',
-                thursday: 'Четвер', friday: "П'ятниця", saturday: 'Субота', sunday: 'Неділя'
+                thursday: 'Четвер', friday: "П'ятниця"
             }};
 
             const dayDotClasses = {{
@@ -805,7 +806,7 @@ def render_ui():
             }}
 
             function getLessonStatus(timeStr, isToday) {{
-                if (!isToday) return {{ isLive: false, timeLeftText: '' }};
+                if (!isToday || scheduleData.is_weekend) return {{ isLive: false, timeLeftText: '' }};
 
                 try {{
                     const [startStr, endStr] = timeStr.split(' - ');
@@ -863,8 +864,7 @@ def render_ui():
                     let gridHtml = '<div class="kanban-grid">';
 
                     for (const [day, lessons] of Object.entries(scheduleData.schedule)) {{
-                        if (day === 'saturday' || day === 'sunday') continue;
-                        const isToday = (day === scheduleData.today);
+                        const isToday = (!scheduleData.is_weekend && day === scheduleData.today);
                         const filtered = filterLessons(lessons);
 
                         let cardsHtml = filtered.map(l => {{
@@ -919,8 +919,10 @@ def render_ui():
 
                 const targetDay = (selectedDay === 'today') ? scheduleData.today : selectedDay;
                 const lessons = scheduleData.schedule[targetDay] || [];
-                const isToday = (targetDay === scheduleData.today);
+                const isToday = (!scheduleData.is_weekend && targetDay === scheduleData.today);
                 const filtered = filterLessons(lessons);
+
+                const todayBadgeText = scheduleData.is_weekend ? 'наступний навчальний день (Пн)' : 'сьогодні';
 
                 let listHtml = `<div class="single-day-wrapper"><div class="kanban-column">
                     <div class="column-header">
@@ -928,12 +930,12 @@ def render_ui():
                             <span class="day-dot ${{dayDotClasses[targetDay] || ''}}"></span>
                             ${{daysFullUa[targetDay] || targetDay}}
                         </div>
-                        ${{isToday ? '<span class="today-badge">сьогодні</span>' : ''}}
+                        ${{(selectedDay === 'today' || isToday) ? `<span class="today-badge">${{todayBadgeText}}</span>` : ''}}
                     </div>
                 `;
 
                 if (filtered.length === 0) {{
-                    listHtml += `<div style="text-align:center; padding:20px; color:var(--text-muted);">🎉 Пар немає! (${{daysFullUa[targetDay] || targetDay}})</div>`;
+                    listHtml += `<div style="text-align:center; padding:20px; color:var(--text-muted);">🎉 Пар немає!</div>`;
                 }} else {{
                     listHtml += filtered.map(l => {{
                         const status = getLessonStatus(l.time, isToday);
