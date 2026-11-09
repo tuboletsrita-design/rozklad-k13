@@ -636,7 +636,7 @@ def render_ui():
                     🎥 Записи лекцій/практик
                 </button>
                 <button class="nav-btn" onclick="switchSection('homework')" id="nav-homework">
-                    📝 ДЗ
+                    📝 Журнал відвідувань
                 </button>
             </div>
 
